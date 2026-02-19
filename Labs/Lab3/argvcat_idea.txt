@@ -1,0 +1,39 @@
+FUNCTION my_strcat(string s1, string s2):
+    1. Calculate length of s1
+    2. Calculate length of s2
+    3. total_length = length_s1 + length_s2 + 1 (for the null terminator '\0')
+    
+    4. result_pointer = allocate memory of size total_length
+    
+    5. IF result_pointer is NULL:
+        Call my_error(s)
+        
+        (check for if s1 or s2 is empty or not)
+    6. Copy s1 into result_pointer (using strcpy)
+    7. Append s2 onto result_pointer (using strcat)
+    
+    8. RETURN result_pointer
+
+FUNCTION main(argc, argv):
+    1. IF argc is 0: 
+        Return 0
+        
+    2. // Initial Step: Put the first argument on the heap
+    3. current_string = my_strcat("", argv[0])
+    
+    4. // The Loop: Starting from the second argument (index 1)
+    5. FOR i FROM 1 TO (argc - 1):
+        a. temp_pointer = current_string   // Save the address of the "old" string
+        
+        b. // Create the "new" longer string
+        c. current_string = my_strcat(temp_pointer, argv[i])
+        
+        d. // Crucial: Free the "old" string memory to prevent leaks
+        e. FREE(temp_pointer)
+        
+    6. PRINT current_string
+    
+    7. // Final Step: Free the very last string created
+    8. FREE(current_string)
+    
+    9. RETURN 0
