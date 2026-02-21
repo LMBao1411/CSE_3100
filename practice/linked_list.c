@@ -22,6 +22,13 @@ Node *prepend(Node *head, int v) {
     return head;
 }
 
+void *prepend_dp(Node **head, int v) {
+    printf("Address stored in head = %p\n", head);
+    Node *new_node = createNode(v);
+    new_node->next = *head;
+    *head = new_node;
+}
+
 Node *find_last(Node *head) {
     if (head != NULL) {
         while(head->next != NULL) {
@@ -39,6 +46,17 @@ Node *append(Node *head, int v) {
     Node *last = find_last(head);
     last->next = createNode(v);
     return head;
+}
+
+void *append_dp(Node **head, int v) {
+    printf("Address stored in head = %p\n", head);
+    if (*head == NULL) {
+        *head = createNode(v);
+    }
+    else {
+        Node *last = find_last(*head);
+        last->next = createNode(v);
+    }
 }
 
 void print_list(Node *head) {
@@ -62,15 +80,26 @@ void free_list(Node *head) {
 }
 
 int main() {
-    Node *list = NULL;
-    // list = prepend(list, 10);
-    // prepend(list, 9);
-    // prepend(list, 8);
+    Node *list_dp = NULL;
+    printf("Double pointer prepend and append\n");
+    prepend_dp(&list_dp, 9);
+    prepend_dp(&list_dp, 8);
+    append_dp(&list_dp, 200);
+    append_dp(&list_dp, 300);
+    print_list(list_dp);
+    free_list(list_dp);
 
-    list = append(list, 100);
-    append(list, 200);
-    append(list, 300);
+    printf("-------------------------\n");
+    
+    printf("Regular linked list\n");
+    Node *list = NULL;
+    list = prepend(list, 8);
+    prepend(list, 9);
+    list = append(list, 10);
+    append(list, 20);
+    append(list, 30);
     print_list(list);
     free_list(list);
+
     return 0;
 }
