@@ -23,6 +23,15 @@ typedef struct Host
 	enum TYPE type;
 } THost;
 
+int wrap(int x, int k) {
+	if (x>k) {
+		return x - (2*k-1);
+	}
+	else if (x < -k) {
+		return x + (2*k+1);
+	}
+	return x;
+}
 
 typedef struct node_tag {
    THost host;				
@@ -62,8 +71,8 @@ node * remove_first(node **head)
 		return NULL;
 
 	node *temp = *head;
-	*head = temp->next;
-	temp->next = NULL;
+	if (temp != NULL)
+		*head = (*head)->next;
 	return temp;
 }
 
@@ -71,15 +80,8 @@ node * remove_first(node **head)
 //and free all the allocated memory
 void remove_all(node **head)
 {
-	if (head == NULL || *head == NULL) {	// Check if the pointer to haed is NULL
-        return;
-    }
-
-	node *temp = *head;
-	while (temp != NULL) {
-		*head = (*head)->next;
-		free(temp);
-		temp = *head;
+	while (head != NULL){
+		free(remove_first(head));
 	}
 }
 
@@ -88,7 +90,16 @@ void remove_all(node **head)
 //return 1 if there is a match, 0 if not
 int location_match(node *head, THost host)
 {
+	if (head == NULL)
+		return 0;
 	
+	while (head != NULL) {
+		if ((host.x == head->host.x) && (host.y == head->host.y)) {
+			return 1;
+		}
+		head = head->next;
+	}
+	return 0;
 }
 
 
@@ -147,7 +158,7 @@ int one_round(THost *hosts, int m, node *p_arr[], int n_arr, int k, int T)
 
 	//TODO: fill in code below
     //reset all linked lists
-
+	
 
 
 	for(int i = 0; i < m; i++)
