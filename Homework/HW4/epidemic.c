@@ -148,18 +148,25 @@ int one_round(THost *hosts, int m, node *p_arr[], int n_arr, int k, int T)
             if(location_match(p_arr[index], hosts[i]))
             {
             	//TODO: fill in what should happen here (not long)
+				hosts[i].type = I;
+				hosts[i].t = 0;
 			}
         }
 		else if(hosts[i].type == I)
         {
            	//TODO: fill in what should happen here (not long)
+			hosts[i].t++;
+			if (hosts[i].t >= T) {
+				hosts[i].type = R;
+			}
         }
     }
 
 	//TODO: fill in code below
     //reset all linked lists
-	
-
+	for (int i=0; i < n_arr; i++) {
+		remove_all(&p_arr[i]);
+	}
 
 	for(int i = 0; i < m; i++)
 	{
@@ -169,10 +176,10 @@ int one_round(THost *hosts, int m, node *p_arr[], int n_arr, int k, int T)
 		//TODO: update locations for all hosts
 		switch(r)
 		{
-			case 0: hosts[i].y = 
-			case 1: hosts[i].x =
-			case 2: hosts[i].y =
-			case 3: hosts[i].x =
+			case 0: hosts[i].y = wrap(hosts[i].y + 1, k); break;
+			case 1: hosts[i].x = wrap(hosts[i].x + 1, k); break;
+			case 2: hosts[i].y = wrap(hosts[i].y - 1, k); break;
+			case 3: hosts[i].x = wrap(hosts[i].x - 1, k); break;
 		}
 
 		//buid linked list for I hosts
