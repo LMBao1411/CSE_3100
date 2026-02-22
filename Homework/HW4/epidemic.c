@@ -49,23 +49,38 @@ node * create_node(THost host)
 //note that it does not return a value 
 void add_first(node **head, node *newnode)
 {
-
+	newnode->next = *head;
+	*head = newnode;
 }
-
 
 //remove the first node from the list
 //note the type: 'node **head'
 //return a pointer to the removed content
 node * remove_first(node **head) 
 {
+	if (*head == NULL)
+		return NULL;
 
+	node *temp = *head;
+	*head = temp->next;
+	temp->next = NULL;
+	return temp;
 }
 
 //remove all the nodes in the list
 //and free all the allocated memory
 void remove_all(node **head)
 {
+	if (head == NULL || *head == NULL) {	// Check if the pointer to haed is NULL
+        return;
+    }
 
+	node *temp = *head;
+	while (temp != NULL) {
+		*head = (*head)->next;
+		free(temp);
+		temp = *head;
+	}
 }
 
 //location_match checks whether a linked list contains
@@ -73,7 +88,7 @@ void remove_all(node **head)
 //return 1 if there is a match, 0 if not
 int location_match(node *head, THost host)
 {
-
+	
 }
 
 
