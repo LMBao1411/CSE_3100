@@ -25,7 +25,7 @@ typedef struct Host
 
 int wrap(int x, int k) {
 	if (x>k) {
-		return x - (2*k-1);
+		return x - (2*k+1);
 	}
 	else if (x < -k) {
 		return x + (2*k+1);
@@ -80,7 +80,7 @@ node * remove_first(node **head)
 //and free all the allocated memory
 void remove_all(node **head)
 {
-	while (head != NULL){
+	while (*head != NULL){
 		free(remove_first(head));
 	}
 }
