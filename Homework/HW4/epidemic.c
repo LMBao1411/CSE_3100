@@ -9,7 +9,10 @@ enum TYPE {S, I, R};
 //this integer should be unique for every x, y pair in your grid
 int idx(int x, int y, int k)
 {
-
+	int width = k*2 + 1;
+	x += k;
+	y += k;
+	return x*width + y;
 }
 
 typedef struct Host
@@ -30,7 +33,15 @@ typedef struct node_tag {
 //return a pointer to the created node
 node * create_node(THost host) 
 {
+	node *h = malloc(sizeof(node));
+	if (h == NULL) {
+		perror("malloc a host failed");
+		exit(1);
+	}
 
+	h->host = host;
+	h->next = NULL;
+	return h;
 }
 
 //add_first() should add to the beginning of a linked list
