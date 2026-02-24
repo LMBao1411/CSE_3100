@@ -86,21 +86,25 @@ Node *find_node(Node *head, int v) {
 }
 
 void delete_node (Node *head, int v) {
+    //Case 1: list is empty
     if (head == NULL) {
         printf("List is empty\n");
         return;
     }
 
     Node *target = find_node(head, v);
+    //Case 2: cannot find target
     if (target == NULL) {
         printf("Value %d is not in the list\n", v);
         return;
     }
+    //Case 3: target is head
     if (target == head) {
         free(head);
         return;
     }
 
+    //Case 4: deleting in the middle or the last node
     Node *curr = head;
     while (curr->next != target) {
         curr = curr->next;
