@@ -35,6 +35,9 @@ int main() {
     // This allocates the entire grid as one contiguous chunk
     // matrix is a single pointer. It points to a whole block of c integers (a row).
     int (*matrix)[c] = malloc(r * sizeof(*matrix));
+    // When you write matrix[i][j], the compiler doesn't have to look up a second pointer address. 
+    // It performs a simple linear calculation to find the element in that single block of memory:
+    // Address = BaseAddress + (i x c + j) x sizeof(int)
     matrix[2][3] = 1000;
     printf("%d\n", matrix[2][3]);
 
