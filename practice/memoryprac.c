@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void free_rows(int **rows, int r) {
+    for (int i = 0; i < r; i++) {
+        free(rows[i]);
+    }
+    free(rows);
+}
+
 int main() {
     int r = 3;
     int c = 5;
@@ -12,12 +19,26 @@ int main() {
     // Allocate each row
     for (int i = 0; i < r; i++) {
         rows[i] = malloc(c * sizeof(int));
+        for (int j = 0; j < c; j++) { // Initialize with some values so it's not random garbage
+            rows[i][j] = i + j; 
+        }
     }
 
-    // Clean up
+    // Print the whole grid
     for (int i = 0; i < r; i++) {
-        free(rows[i]);
+        for (int j = 0; j < c; j++) {
+            printf("%d ", rows[i][j]);
+        }
+        printf("\n"); // This newline ensures the buffer flushes every row
     }
-    free(rows);
+
+    // This allocates the entire grid as one contiguous chunk
+    // matrix is a single pointer. It points to a whole block of c integers (a row).
+    int (*matrix)[c] = malloc(r * sizeof(*matrix));
+    matrix[2][3] = 1000;
+    printf("%d\n", matrix[2][3]);
+
+    free(matrix);
+    free_rows(rows, r);
     return 0;
 }
