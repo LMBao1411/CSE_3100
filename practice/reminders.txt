@@ -1,0 +1,1 @@
+when passing an array to a function, you are passing a pointer to that array and the pointer is size of 8 bytes
