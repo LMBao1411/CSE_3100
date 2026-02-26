@@ -39,11 +39,66 @@ void printList(Node *head) {
   printf("\n");
 }
 
+// HELPER: free up the list
+void free_list(Node *head) {
+  Node *temp = head;
+  while (temp != NULL) {
+    head = head->next;
+    free(temp);
+    temp = head;
+  }
+}
+
+// HELPER: reverse a list
+Node *reverse_list(Node *head) {
+  if (head == NULL || head->next == NULL) {
+        return head;
+    }
+
+    Node *prev = NULL;
+    Node *curr = head;
+    while (curr != NULL) {
+        Node *nxt = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = nxt;
+    }
+    head = prev;
+    return head;
+}
+
+// HELPER: split list into two sublists
+Node *split_list(Node *head) {
+    Node *slow = head;
+    Node *fast = head->next;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    Node *secondHalf = slow->next;
+    slow->next = NULL;   // break the list
+
+    return secondHalf;
+}
 
 void zipList(Node **headRef) {
-
   // fill code here
-	
+  Node *head1 = *headRef;
+	Node *head2 = split_list(*headRef);
+  head2 = reverse_list(head2);
+  Node *curr1 = head1;
+  Node *curr2 = head2;
+
+  while ((curr1 != NULL) && (curr2 != NULL)) {
+    Node *nxt1 = curr1->next;
+    Node *nxt2 = curr2->next;
+    curr1->next = curr2;
+    curr2->next = nxt1;
+    curr1 = nxt1;
+    curr2 = nxt2;
+  }
 }
 
 int main(int argc, char *argv[]) {
@@ -66,8 +121,8 @@ int main(int argc, char *argv[]) {
 
   printf("Zipped list:\n");
   printList(head);
- 
-	// fill code here
 
+	// fill code here
+  free_list(head);    // free up the list
   return 0;
 }
