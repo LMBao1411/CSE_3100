@@ -4,11 +4,63 @@
 #include <ctype.h>
 #include "linkedlist.h"
 
+// HELPER: reverse a list
+node *reverse_list(node *head) {
+  if (head == NULL || head->next == NULL) {
+        return head;
+    }
+    node *prev = NULL;
+    node *curr = head;
+    while (curr != NULL) {
+        node *nxt = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = nxt;
+    }
+    head = prev;
+    return head;
+}
+
+// HELPER: convert list to an integer
+int list_to_int(node *head) {
+    int num = 0;
+    int digit = 1;
+    while (head) {
+        num += (head->v) * digit;
+        digit *= 10;
+        head = head->next;
+    }
+    return num;
+}
+
+// HELPER: reverse a number
+int reverseNum(int num) {
+    int rev_num = 0;
+    while (num > 0) {
+        rev_num = rev_num * 10 + num % 10;
+        num /= 10;
+    }
+    return rev_num;
+}
+
 node* addition(node* num1, node* num2) {
     node* result = NULL;
-
     // TODO: Implement addition logic here
-
+    // Convert lists to integers
+    long int int1 = list_to_int(num1);
+    long int int2 = list_to_int(num2);
+    long int sum = int1 + int2;
+    if (sum == 0) {
+        node* zeroNode = new_node(0);
+        result = prepend(result, zeroNode);
+        return result;
+    }
+    while (sum > 0) {
+        int digit = sum % 10;
+        sum /= 10;
+        node* newNode = new_node(digit);
+        result = prepend(result, newNode);
+    }
     return result;
 }
 
@@ -16,7 +68,20 @@ node* subtraction(node *num1, node *num2) {
     node *result = NULL;
 
     // TODO: Implement subtraction logic here
-
+    long int int1 = list_to_int(num1);
+    long int int2 = list_to_int(num2);
+    long int diff = int1 - int2;
+    if (diff == 0) {
+        node* zeroNode = new_node(0);
+        result = prepend(result, zeroNode);
+        return result;
+    }
+    while (diff > 0) {
+        int digit = diff % 10;
+        diff /= 10;
+        node* newNode = new_node(digit);
+        result = prepend(result, newNode);
+    }
     return result;
 }
 
