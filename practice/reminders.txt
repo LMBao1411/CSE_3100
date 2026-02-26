@@ -2,9 +2,6 @@ when passing an array to a function, you are passing a pointer to that array and
 
 malloc calloc or realloc will take dynamic memory from the heap for usage, every alloc goes with free. can only free memory on heap
 
-traverse through a string using strlen() OR use 
-while (*s1) {
-    *s1 (OPERATIONS);
-    s1++;
-}
+traverse through a string using for (int i=0; i<strlen(the_string); i++) OR use for (int i=0; arr[i] != '\0'; i++) OR
+while (*s1) {*s1 (OPERATIONS); s1++;}
 
