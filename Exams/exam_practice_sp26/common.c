@@ -27,7 +27,7 @@ void commonChars(char arr[][MAX_LEN], int n) {
   printf("Common characters: ");
 
   // fill code here
-  int found = true;
+  int found = false;
   for (int i=0; i<26; i++) {
     if (common[i]==true) {
       printf("%c ", i + 'a');
