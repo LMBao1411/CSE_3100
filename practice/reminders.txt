@@ -1,1 +1,10 @@
 when passing an array to a function, you are passing a pointer to that array and the pointer is size of 8 bytes
+
+malloc calloc or realloc will take dynamic memory from the heap for usage, every alloc goes with free. can only free memory on heap
+
+traverse through a string using strlen() OR use 
+while (*s1) {
+    *s1 (OPERATIONS);
+    s1++;
+}
+

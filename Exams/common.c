@@ -12,8 +12,8 @@ void commonChars(char arr[][MAX_LEN], int n) {
   }
 
   for (int i = 0; i < n; i++) {
-
     // fill code here
+    for (int i=0; )
   }
 
   printf("Common characters: ");
