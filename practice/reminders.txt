@@ -5,3 +5,14 @@ malloc calloc or realloc will take dynamic memory from the heap for usage, every
 traverse through a string using for (int i=0; i<strlen(the_string); i++) OR use for (int i=0; arr[i] != '\0'; i++) OR
 while (*s1) {*s1 (OPERATIONS); s1++;}
 
+
+when initializing an array for example int arr[6] {0,1,2,3} and int arr2[6] = {1,2,3,4,5}. The garbage values are equal to each other when comparing
+
+int add(int *num1, int num2) {  // this BOTH modifies the value that num1 is pointing to and returning the value that num1 is pointing to
+    *num1 += num2;
+    return *num1;
+}
+
+int add(int *num1, int num2) {  // this ONLY returning the value that num1 is pointing to plus num2, this does not modifies the value that num1 is pointing to
+    return *num1 + num2;
+}
