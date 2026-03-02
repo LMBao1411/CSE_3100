@@ -1,0 +1,23 @@
+Processes are created by other processes
+Executing the same code means the memory contents are the same, same call stack
+a child process is an exact copy of the parent
+
+birth via cloning:
+pid_t fork(void)
+In the parent process:
+• fork() returns the process identifier of the child (> 0)
+• If a failure occurred, it returns -1 (and sets errno)
+In the child process: fork() returns 0 (zero)
+
+every process has an ID, use call getpid()
+
+
+On memory, parent and child starts on the same memory, 
+- but as soon as there is any change to the internal memory, they diverge into two seperate memory
+
+It could run concurrently and ignore the child
+• If child dies it enters a zombie state
+
+pid_t wait(int * status);
+pid_t waitpid(pid_t pid, int * status, int options);
+purpose: let child process done first, then parent
