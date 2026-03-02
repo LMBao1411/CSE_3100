@@ -7,11 +7,14 @@ typedef struct particle {
 } ParticleSet;
 
 void addToSet(ParticleSet **p, int idx) {
-  ParticleSet *new_p;
-  new_p->next = idx;
+  ParticleSet *newNode = malloc(sizeof(ParticleSet));
+    newNode->mass = idx;
+    newNode->next = *p;
+    *p = newNode;
 }
 
 void removeFromSet(ParticleSet **p) {
+  if (*p == NULL) {return;}
   ParticleSet *curr = *p;
   *p = (*p)->next;
   free(curr);
@@ -23,19 +26,24 @@ int isSetEmpty(ParticleSet *p) {
 }
 
 int topOfTheSet(ParticleSet *p) {
-  return p;
+  return p->mass;
+}
+
+// HELPER: dives to the end of the list first to print
+void printSetForward(ParticleSet *p) {
+    if (p == NULL) return;
+    
+    printSetForward(p->next); // Recursive call
+    printf("%d ", p->mass);   // Print happens as the recursion "unwinds"
 }
 
 void printSet(ParticleSet *p) {
-  if (isSetEmpty(p)) {
-    printf("Empty\n");
-    return;
-  }
-  while (p != NULL) {
-    printf("%d ", p->mass);
-    p = p->next;
-  }
-  printf("\n");
+    if (p == NULL) {
+        printf("Empty\n");
+        return;
+    }
+    printSetForward(p);
+    printf("\n");
 }
 
 void freeSet(ParticleSet **b) {
@@ -48,7 +56,32 @@ void freeSet(ParticleSet **b) {
 }
 
 ParticleSet *fight(int *particles, int count) {
-  
+    ParticleSet *stack = NULL;
+    for (int i = 0; i < count; i++) {
+        int current = particles[i];
+        int survived = 1;
+        
+        while (stack != NULL && stack->mass > 0 && current < 0) {
+            if (abs(stack->mass) < abs(current)) {
+                removeFromSet(&stack);  // top dies
+                continue;               // add the winning particle to the stack
+            }
+            else if (abs(stack->mass) == abs(current)) {
+                removeFromSet(&stack);  // both die
+                survived = 0;
+                break;
+            }
+            else {
+                survived = 0;  // current dies
+                break;
+            }
+        }
+
+        if (survived) {
+            addToSet(&stack, current); // set the newly added particle to the TOP of the stack
+        }
+    }
+    return stack;
 }
 
 int main(int argc, char *argv[]) {
