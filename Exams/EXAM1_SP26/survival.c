@@ -29,21 +29,16 @@ int topOfTheSet(ParticleSet *p) {
   return p->mass;
 }
 
-// HELPER: dives to the end of the list first to print
-void printSetForward(ParticleSet *p) {
-    if (p == NULL) return;
-    
-    printSetForward(p->next); // Recursive call
-    printf("%d ", p->mass);   // Print happens as the recursion "unwinds"
-}
-
 void printSet(ParticleSet *p) {
-    if (p == NULL) {
-        printf("Empty\n");
-        return;
-    }
-    printSetForward(p);
-    printf("\n");
+  if (isSetEmpty(p)) {
+    printf("Empty\n");
+    return;
+  }
+  while (p != NULL) {
+    printf("%d ", p->mass);
+    p = p->next;
+  }
+  printf("\n");
 }
 
 void freeSet(ParticleSet **b) {
@@ -56,32 +51,42 @@ void freeSet(ParticleSet **b) {
 }
 
 ParticleSet *fight(int *particles, int count) {
-    ParticleSet *stack = NULL;
-    for (int i = 0; i < count; i++) {
-        int current = particles[i];
-        int survived = 1;
-        
-        while (stack != NULL && stack->mass > 0 && current < 0) {
-            if (abs(stack->mass) < abs(current)) {
-                removeFromSet(&stack);  // top dies
-                continue;               // add the winning particle to the stack
-            }
-            else if (abs(stack->mass) == abs(current)) {
-                removeFromSet(&stack);  // both die
-                survived = 0;
-                break;
-            }
-            else {
-                survived = 0;  // current dies
-                break;
-            }
-        }
+  ParticleSet *survived_stack = NULL;
+  for (int i = 0; i < count; i++) {
+    int current = particles[i];
+    int alive = 1;
 
-        if (survived) {
-            addToSet(&stack, current); // set the newly added particle to the TOP of the stack
-        }
+    // collision condition needs to be: 
+    // 1. survived stack is not null
+    // 2. the particle in the stack needs to be moving to the right (+positive numbers)
+    // 3. incomding particle (which is current) needs to be moving to the left
+    // this means that the first particle will always be added to the stack, but will be fighting later
+
+    // flow: each iteration, top of the stack will be fighting with current
+    // if current wins, top of the stack will be removed, current will be added to the stack as the new top
+    // if current and stack both die, top of the stack will be removed, nothing is added so move onto the next iteration
+    // if current cannot beat stack, nothing gets added to the stack
+
+    while (survived_stack != NULL && survived_stack->mass > 0 && current < 0) {
+      if (abs(survived_stack->mass) < abs(current)) {
+        removeFromSet(&survived_stack);   // the top of the survived stack dies
+        continue;                         // this means the winning particle needs to be added to the stack
+      }
+      else if (abs(survived_stack->mass) == abs(current)) {
+        removeFromSet(&survived_stack);   // both current and top of the survied stack dies
+        alive = 0;                        // nothing will be added to the survived stack
+        break;
+      }
+      else if (abs(survived_stack->mass) > abs(current)) {
+        alive = 0;                        // current particle dies
+        break;
+      }
     }
-    return stack;
+    if (alive) {
+      addToSet(&survived_stack, current);
+    }
+  }
+    return survived_stack;
 }
 
 int main(int argc, char *argv[]) {
