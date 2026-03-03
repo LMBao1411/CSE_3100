@@ -1,0 +1,31 @@
+You want:
+Parent → runs C logic
+Child → runs Python script
+Child produces output
+Parent captures that output
+Parent uses it
+This is exactly what pipes + fork + exec are for.
+
+High-Level Idea:
+1. Create a pipe
+2. fork()
+3. Child: Redirect stdout to pipe
+          exec() Python script
+
+4. Parent: Read from pipe
+        Convert output to usable value
+        Continue processing
+
+Visual flow:
+Parent Process
+     |
+   pipe()
+     |
+   fork()
+    /   \
+Child   Parent
+ |         |
+stdout → pipe
+exec python
+           read(pipe)
+           use value
