@@ -29,3 +29,15 @@ stdout → pipe
 exec python
            read(pipe)
            use value
+
+** pipe(pipefd) **
+Creates:
+pipefd[0] → read end
+pipefd[1] → write end
+
+
+This is the magic line: dup2(pipefd[1], STDOUT_FILENO)
+It says:
+"Take everything the child prints to stdout and send it into the pipe instead."
+so the value from the python script does not go to the terminal, but instead goes into the pipe
+then the parent reads it
