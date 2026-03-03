@@ -1,3 +1,8 @@
+The pipe() system call is used to create a pipe. The function prototype is int pipe(int fildes[2]); and it returns an array of two integer file descriptors.
+File Descriptors: The two file descriptors created are:
+fildes[0] is the read end of the pipe.
+fildes[1] is the write end of the pipe.
+
 You want:
 Parent → runs C logic
 Child → runs Python script
