@@ -1,0 +1,3 @@
+once exec(), execlp(), execl() commands successfully work, whatever exec is executing will take over the whole process
+Everything after exec will not work
+A sucessful exec never returns anything in the file
