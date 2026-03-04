@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+cd /autograder/source/
+cp /autograder/source/files/* /autograder/submission/
+python3 grader.py

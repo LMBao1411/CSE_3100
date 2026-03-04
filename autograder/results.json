@@ -1,0 +1,28 @@
+{
+    "tests": [
+        {
+            "name": "Compilation calculator.c",
+            "max_score": null,
+            "visibility": "visible",
+            "output": "Required Files: calculator.c\nCode compilation successful\nmake: 'calculator' is up to date.\n",
+            "status": "passed",
+            "score": null
+        },
+        {
+            "name": "IO Test-addition calculator.c",
+            "max_score": 20,
+            "visibility": "visible",
+            "output": "IO Test passed\nOutput matches the expected output.\nCode output:\nEnter num1:\nEnter num2:\n1 + 2 = 3\n",
+            "status": "passed",
+            "score": 20
+        },
+        {
+            "name": "IO Test-addition calculator.c",
+            "max_score": 20,
+            "visibility": "visible",
+            "output": "IO Test failed\nOutput does not match the expected output.\nExpected output:\nEnter num1:\nEnter num2:\n1 * 2 = 2\n\nCode output:\nEnter num1:\nEnter num2:\n1 * 2 = -1\n\n",
+            "status": "failed",
+            "score": 0
+        }
+    ]
+}
