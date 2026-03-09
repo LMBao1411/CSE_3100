@@ -1,0 +1,16 @@
+Duplicating File Descriptors
+• Do not change file descriptor table directly
+• Used open() and close() and two new functions
+dup() copies oldfd to the first available entry (in FD table)
+dup2() copies oldfd to newfd
+    • Closes newfd first if it is in use
+
+#include <unistd.h>
+int dup(int oldfd);
+int dup2(int oldfd, int newfd);
+
+Steps for redirecting stdout
+1. open(). open a file (and save the file descriptor in fd)
+2. dup2(). copy fd to 1 (so that the file descriptor 1 points to the file
+just opened)
+3. close(fd)

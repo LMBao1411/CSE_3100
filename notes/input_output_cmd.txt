@@ -1,0 +1,2 @@
+$ command < infile < outfile
+$ sort < file.txt > sorted.txt
