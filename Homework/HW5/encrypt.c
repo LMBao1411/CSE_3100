@@ -14,7 +14,7 @@ void encrypt(char *message, unsigned char key, unsigned char shift, int fd)
 	int msg[len];
 
 	for(int i = 0; i<len; i++)
-		msg[i] = (message[i] << shift) ^ key;
+		msg[i] = (message[i] << shift) ^ key;			// a shift on char will turn it into an integer
 	write(fd, msg, len*sizeof(int));
 	printf("%s\n", (char *)msg);
 }
@@ -54,3 +54,4 @@ int main(int argc, char *argv[])
 	close(fd);
 	return 0;
 }
+

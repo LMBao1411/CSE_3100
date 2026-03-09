@@ -14,3 +14,33 @@ Steps for redirecting stdout
 2. dup2(). copy fd to 1 (so that the file descriptor 1 points to the file
 just opened)
 3. close(fd)
+
+
+dup2(3,1) basically is close(1) and then dup(3)
+- 1 is now pointing to whatever 3 is pointing to
+
+Summary of Steps in Child Process
+1. Close FDs that are opened in parent and not needed in child
+2. open(). Open a file (and save the file descriptor in fd)
+3. dup2(). Copy FD to the right place
+4. close(fd)
+5. Exec
+
+**redirection must happen before exec in child (after fork() ) because after exec nothing in child will run**
+
+• Where & when should the new file be opened ? 
+    open the file in the child process after fork() but before exec().
+        The child is the one that will run the new program.
+        The file descriptor must exist before the program starts executing so its stdout is already redirected.
+• Where & when should you call close(1) ? 
+    in the child process before dup().
+        File descriptor 1 is stdout
+        We close it so that the next duplicated descriptor will take its place.
+
+• Where & when should you call dup ? 
+    Immediately after close(1) in the child process.
+
+• Where & when should close(newfd) be called ?
+    Still in the child, after dup() but before exec().
+        After duplication, fd 1 already refers to the file.
+        The original newfd descriptor is no longer needed
