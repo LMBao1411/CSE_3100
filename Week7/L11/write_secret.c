@@ -7,7 +7,10 @@
 // encrypt the message and write the result to file fd
 void write_secret_message(char *message, char key, int fd) {
   int len = strlen(message);
-  printf("len = %d\n", len);
+  printf("len = %d\n", len);while (fscanf(fp, "%d", &encrypted[count]) == 1) {
+        count++;
+    }
+
   int msg[len];
 
   for (int i = 0; i < len; i++) {
