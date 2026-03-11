@@ -1,0 +1,14 @@
+pipefd[0] refers to the read end of the pipe.
+pipefd[1] refers to the write end of the pipe
+
+int p[2];
+pipe(p); // this create a pipe
+
+so after doing this our FD table will look like this
+0 -> stdin
+1 -> stdout
+2 -> stderr
+3 -> p[0]
+4 -> p[1]
+
+remember to close whenever done using the pipe
