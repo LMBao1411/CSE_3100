@@ -29,8 +29,8 @@ int main() {
   }
 	// parent process
 
-  close(p[1]);
-
+  close(p[1]);  // close of the write end of pipe in the parent already
+                // so the pid2 child does not need to inherit it, so no need to close(p[1]) in the pid2 child process
 
   int pid2 = fork();
   if (pid2 == 0) {
