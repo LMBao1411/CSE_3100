@@ -20,16 +20,20 @@ int main() {
   int pid1 = fork();
   if (pid1 == 0) {
     close(p[0]);
-    dup2(p[1], 1);
+    dup2(p[1], 1);    // redirect to the write end of pipe instead of stdin 
     close(p[1]);
     execlp("cat", "cat", "pipe.txt", NULL);
     exit(1);
   }
 
+  // so now cat pipe.txt is written to p[0] which is the input for child pid2
+  // which then it reads and then execute tr a-z A-Z afterwards
+  // cat pipe.txt | tr a-z A-Z
+
   int pid2 = fork();
   if (pid2 == 0) {
     close(p[1]);
-    dup2(p[0], 0);
+    dup2(p[0], 0);   // redirect  to the read end of pipe instead of stdout
     close(p[0]);
     execlp("tr", "tr", "a-z", "A-Z", NULL);
     exit(0);
