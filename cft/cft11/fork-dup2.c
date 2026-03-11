@@ -17,7 +17,6 @@
 
 int main(int argc, char *argv[])
 {
-
 	if(argc!=2)
 	{
 		printf("Usage: %s message\n", argv[0]);
@@ -39,10 +38,14 @@ int main(int argc, char *argv[])
         strcpy(buffer, argv[1]);
 		//TODO
 		//fill in the code below
-
-
-
-
+		dup2(fd,1);
+		close(fd);
+		for (int i=0; i<MAX_LINE; i++) {
+			if (buffer[i] == '\0') {
+				break;
+			}
+			buffer[i] = toupper(buffer[i]);
+		}
 	}
 
 	printf("%s\n", argv[1]);
