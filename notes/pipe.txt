@@ -12,3 +12,18 @@ so after doing this our FD table will look like this
 4 -> p[1]
 
 remember to close whenever done using the pipe
+
+child process will inherit all parent file descriptors
+
+read() is blocking which means the process will wait to read from the pipe, even if the pipe is empty
+
+Why can’t we just have one pipe for two-way comms
+• If two processes try to simultaneously read from a pipe, we can’t be
+sure which process will be first to succeed.
+• The two processes race for data.
+• We can prevent this race with some synchronization like wait(),
+waitpid()
+• The simpler way is to create two pipes; one for sending information
+each direction
+• This has it’s dangers too, make sure that both processes are not
+trying to read from empty pipes at the same time
