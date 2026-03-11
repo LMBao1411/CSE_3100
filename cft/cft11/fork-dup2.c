@@ -17,16 +17,17 @@
 
 int main(int argc, char *argv[])
 {
+	
 	if(argc!=2)
 	{
 		printf("Usage: %s message\n", argv[0]);
 		return -1; 
 	}
-    pid_t pid;
-    pid = fork();
-    if(pid == 0)
-    {
-
+	pid_t pid;
+	pid = fork();
+	if(pid == 0)
+	{
+		
 		//Make sure when the file is created, the user has the read and write access 
 		int fd = open("output.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 		if(fd < 0)
@@ -34,21 +35,22 @@ int main(int argc, char *argv[])
 			printf("Cannot open the file\n");
 			return -1;
 		} 
-        char buffer[MAX_LINE];
-        strcpy(buffer, argv[1]);
+		char buffer[MAX_LINE];
+		strcpy(buffer, argv[1]);
 		//TODO
 		//fill in the code below
-		dup2(fd,1);
+		dup2(fd, 1);
 		close(fd);
-		for (int i=0; i<MAX_LINE; i++) {
+		for (int i = 0; i < MAX_LINE; ++i) {
 			if (buffer[i] == '\0') {
 				break;
 			}
 			buffer[i] = toupper(buffer[i]);
 		}
+		printf("%s", buffer);
+		return 0;
 	}
-
+	
 	printf("%s\n", argv[1]);
 	return 0;
 } 
-
