@@ -1,0 +1,15 @@
+ pipe    |      Purpose         |        Parent Does...         |        Child Does...
+ fdp     |   parent->child      |      write(fdp[1],__,__)      |       write(fdc[1],__,__)
+ fdc     |   child->parent      |      read(fdc[0],__,__)       |       read(fdc[0],__,__)
+
+
+C -> P
+P <- C
+
+in child process:
+parent close fdp[1]
+child close fdc[0]
+
+in parent process:
+parent close fpd[0]
+child close fdc[1]
