@@ -70,6 +70,33 @@ typedef struct program_tag {
 void start_program(Program *programs, int num_programs, int cur) 
 {
     // TODO
+    pid_t pid = fork();
+    if (pid == -1) {
+        die("fork() failed.");
+    }
+
+    else if (pid != 0) {
+        if (cur != 0) {
+            close(programs[cur].fd_in);
+        }
+        if (cur != num_programs - 1) {
+            close(programs[cur].fd_out);
+        }
+        return;
+    }
+
+    if (cur != 0) {
+        dup2(programs[cur].fd_in, 0);
+        close(programs[cur].fd_in);
+    }
+    
+    if (cur != num_programs - 1) {
+        dup2(programs[cur].fd_out, 1);
+        close(programs[cur].fd_out);
+    }
+
+    execvp(programs[cur].argv[0], programs[cur].argv);
+    die("execvp() failed.");
 }
 
 /* Wait on a program. 
@@ -91,6 +118,7 @@ int wait_on_program(Program *prog)
         return -1;
 
     // TODO
+    waitpid(prog->pid, &exitStatus, 0);
     return WEXITSTATUS(exitStatus);
 }
 
@@ -112,6 +140,14 @@ int wait_on_program(Program *prog)
 void prepare_pipes(Program *programs, int num_programs)
 {
     // TODO
+    int pipe_fd[2];
+    for (int i = 0; i < num_programs - 1; ++i) {
+        if (pipe(pipe_fd) == -1) {
+            die("pipe() failed.");
+        }
+        programs[i].fd_out = pipe_fd[1];
+        programs[i+1].fd_in = pipe_fd[0];
+    }
 }
 
 /*********************************************************/
