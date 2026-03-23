@@ -1,3 +1,24 @@
 once exec(), execlp(), execl() commands successfully work, whatever exec is executing will take over the whole process
+the p vs non-p, p looks for the command in the current path
 Everything after exec will not work
-A sucessful exec never returns anything in the file
+A sucessful exec never returns anything in the file because whatever in the exec will take over the memory, over the calling process
+
+/home/user/code/calc
+./calc sum 1 2
+run this from any folder
+
+int execl(const char *path, const char *arg, ...);
+path: The pathname of the executable file to be executed.
+arg: The first argument to the new process (conventionally, the program's name).
+...: A variable number of pointers to null-terminated strings, each representing an argument to the executed program.
+
+execl("/home/user/code/calc", "calc", "sum", "1", "2", NULL)
+
+OR
+
+int execv(const char *path, char *const argv[]);
+path argument is the pathname (either relative or absolute) of the file to be executed.
+argv argument is an array of pointers to null-terminated strings, which represents the argument list available to the new program.
+
+args = {"calc","sum", "1", "2", NULL}
+execv("/home/user/code/calc", args)

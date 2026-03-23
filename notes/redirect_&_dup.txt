@@ -11,8 +11,7 @@ int dup2(int oldfd, int newfd);
 
 Steps for redirecting stdout
 1. open(). open a file (and save the file descriptor in fd)
-2. dup2(). copy fd to 1 (so that the file descriptor 1 points to the file
-just opened)
+2. dup2(). copy fd to 1 (so that the file descriptor 1 points to the file just opened)
 3. close(fd)
 
 
