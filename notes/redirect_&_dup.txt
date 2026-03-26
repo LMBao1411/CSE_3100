@@ -43,3 +43,12 @@ Summary of Steps in Child Process
     Still in the child, after dup() but before exec().
         After duplication, fd 1 already refers to the file.
         The original newfd descriptor is no longer needed
+
+The difference between execl* and execv* is the argument passing. execl* require a list of arguments while execv* require a vector of arguments.
+A list of arguments is useful if you know all the arguments at compile time. 
+In your case the arguments will be entered by the user and you have to construct a vector of arguments at run time, so you should use one of the execv* functions.
+
+The functions with suffix p use the PATH environment variable to find the program (e.g. "ls"), 
+without this you have to specify the full path (either absolute or relative to the current directory, e.g. "/bin/ls"). 
+Using PATH is what shells normally do, so this seems to be the correct choice for you.
+
