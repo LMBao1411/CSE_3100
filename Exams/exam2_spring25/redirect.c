@@ -14,6 +14,8 @@ void redirectStdin(const char *filename) {
   }
   // TODO
   // fill in the code below
+  dup2(fd, 0);
+  close(fd);
 }
 
 // redirect standad output to the specified file
@@ -25,4 +27,6 @@ void redirectStdout(const char *filename) {
   }
   // TODO
   // fill in the code below
+  dup2(fd, 1);
+  close(fd);
 }

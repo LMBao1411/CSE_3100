@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
   redirectStdin(argv[1]);
   redirectStdout(argv[2]);
   // fill in one line of code to execute the command specified by argv_list[]
+  execvp("tr", argv_list);
 
   perror("Something went wrong!\n");
   return -1;
