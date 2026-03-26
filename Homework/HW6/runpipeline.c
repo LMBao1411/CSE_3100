@@ -140,6 +140,7 @@ int wait_on_program(Program *prog)
 void prepare_pipes(Program *programs, int num_programs)
 {
     // TODO
+    // For N programs, you need N-1 pipes
     int pipe_fd[2];
     for (int i = 0; i < num_programs - 1; ++i) {
         if (pipe(pipe_fd) == -1) {
