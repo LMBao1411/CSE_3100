@@ -7,21 +7,18 @@
 
 int main(int argc, char *argv[]) {
     int num = atoi(argv[1]);
+    
+    // initialize all the pipes
     int p_c1[2];
     int c1_p[2];
-
     int p_c2[2];
     int c2_p[2];
-
     int c1_c2[2];
     int c2_c1[2];
-
     pipe(p_c1);
     pipe(c1_p);
-
     pipe(p_c2);
     pipe(c2_p);
-
     pipe(c1_c2);
     pipe(c2_c1);
 
@@ -120,8 +117,6 @@ int main(int argc, char *argv[]) {
     // close everything after finishing
     close(p_c1[0]); close(c1_p[1]); close(c1_c2[1]); close(c2_c1[0]);
     close(c1_c2[0]); close(c2_p[1]); close(p_c2[0]); close(c2_c1[1]);
-
-    
 
     return 0;
 }
