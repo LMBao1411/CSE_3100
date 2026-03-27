@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
 
         // step 5: write to child 1
         close(c2_c1[0]);
+        num = num * 4;
         write(c2_c1[1], &num, sizeof(int));
         printf("Child 2 wrote: %d\n", num);
 
@@ -119,6 +120,8 @@ int main(int argc, char *argv[]) {
     // close everything after finishing
     close(p_c1[0]); close(c1_p[1]); close(c1_c2[1]); close(c2_c1[0]);
     close(c1_c2[0]); close(c2_p[1]); close(p_c2[0]); close(c2_c1[1]);
+
+    
 
     return 0;
 }
