@@ -111,33 +111,60 @@ void pipe_sort(int seed, int n, int print_sorted, int num_printed){
 
     // TODO
     // create 2 child processes to sort arrays a and b, into increasing order
-    //
     //  child 1:
+    pid_t child1 = fork();
+    if (child1 == -1) {
+        die("child1 failed");
+    }
+    else if (child1 == 0) {
     //      close file descriptors that are not needed
     //      call qsort() to sorts a,
     //      writes sorted integers to pipe 1 (pd1)
     //      close file descriptor(s) and exit
-    //
-
+        close(pd1[0]); 
+        close(pd2[1]); 
+        close(pd2[0]);
+        qsort(a, half, sizeof(int), compare_int);
+        write(pd1[1], a, sizeof(int)*half);
+        close(pd1[1]);
+        exit(EXIT_SUCCESS);
+    }
     //  child 2:
+    pid_t child2 = fork();
+    if (child2 == -1) {
+        die("child2 failed");
+    }
+    else if (child2 == 0) {
     //      close file descriptors that are not needed
     //      call qsort() to sorts b,
     //      writes sorted integers to pipe 2 (pd2)
     //      close file descriptor(s) and exit
-    //
+        close(pd2[0]); 
+        close(pd1[0]); 
+        close(pd1[1]);
+        qsort(b, n - half, sizeof(int), compare_int);
+        write(pd2[1], b, sizeof(int) * (n - half));
+        close(pd2[1]);
+        exit(EXIT_SUCCESS);
+    }
 
     // Parent process
     // Close write ends of pipes
-
     // Read sorted data from pipes
-
     // Close read ends of pipes
-
     // Wait for child processes to complete
-
     // Merge and print results
-    // int sorted[n];
-    // merge(a, b, sorted, half);
-    // if (print_sorted)
-    //     print_array(sorted, n, num_printed);
+    close(pd1[1]); 
+    close(pd2[1]);
+    read(pd1[0], a, sizeof(int)*half);
+    read(pd2[0], b, sizeof(int)*(n - half));
+    close(pd1[0]); 
+    close(pd2[0]);
+    waitpid(child1, NULL, 0);
+    waitpid(child2, NULL, 0);
+
+    int sorted[n];
+    merge(a, b, sorted, half);
+    if (print_sorted)
+        print_array(sorted, n, num_printed);
 }
