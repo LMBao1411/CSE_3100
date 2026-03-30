@@ -1,0 +1,65 @@
+process s a bundle grouping
+    having a virtual memory address
+    a collection of files
+    a collection of concurrent threads
+
+#include <pthread.h>
+thread is a light-weight entity
+    can run concurrently with other threads
+    share resources in the process
+    confined to a single process
+    can be created and destroyed
+
+how is a thread created?
+- by another thread, pthread_create()
+- it is a given a stack to execute and a function to run
+When a process is created, there is a single thread already existed
+
+Once created, threads are peers, and may create other threads.
+
+When does a thread die?
+- voluntarily, after completing its task    pthread_exit()
+- requested by another thread               pthread_cancel()
+- when the process dies (along with all of its threads in it)
+    + Any thread calls exit()
+    + note that exit() is called when main() returns
+    Any thread can bring down the whole castle
+
+function given to a thread always return void *
+only take one argument (void *arg)
+    - void * thread_main(void * arg)
+
+int pthread_create(
+        pthread_t* thread,
+        pthread_attr_t* attr,
+        void* (*start_routine)(void*),
+        void* arg
+        );
+Returns 0 if successful, and non-zero (> 0) if error
+*thread is the returned thread ID, if successful
+attr specifies the attribute for the thread. NULL for default.
+start_routine() is the 'main' function of the thread
+void * arg is passed to start_routine()
+• Thread equivalent of fork(), but it does create (not "clone")
+
+pthread t;
+pthread_create(&t, NULL, thread_func, (void*)arg of thread_func);
+
+
+Thread Termination
+void pthread_exit(void* status)
+• The function always succeeds and does not return
+• status can be obtained by other threads
+• Similar to process termination
+main() returns, or exit() called by any thread
+
+Join the Thread
+int pthread_join(pthread_t tid, void** status)
+• Wait for a thread to complete
+    • Blocks the calling thread until thread tid terminates
+• Can obtain the exit status of the thread
+    • Pass NULL to ignore the return value
+    • Why is the type of status (void **)?
+• Equivalent of waitpid()for processes
+
+T1 seeing pthread(T2): T1 will wait for T2 to finish to join T2
