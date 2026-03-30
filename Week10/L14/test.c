@@ -1,11 +1,13 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // Function to be executed by the thread
 void *print_message(void *arg) {
   char *message = (char *)arg;
   printf("%s\n", message);
+  sleep(5);    // sleep for 5 seconds
   pthread_exit(NULL); // Exit the thread
 }
 

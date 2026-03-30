@@ -27,7 +27,7 @@ int main() {
     return 1;
   }
 
-  // Wait for the thread to finish and capture the result
+  // Wait for the thread to finish and capture the result of 55
   if (pthread_join(thread, (void **)&result)) {
     fprintf(stderr, "Error joining thread\n");
     return 2;
