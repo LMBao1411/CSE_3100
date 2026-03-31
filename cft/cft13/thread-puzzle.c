@@ -48,7 +48,7 @@ void* SolvePuzzle(void* threadarg)
 {
 
 	//Finish the following line of code
-    struct thread_data* my_data = ;
+    struct thread_data* my_data = threadarg;
     
     int cur = 0;
     int n = my_data->n;
@@ -74,9 +74,8 @@ void* SolvePuzzle(void* threadarg)
             if(cur + a[cur] >= 0 && cur + a[cur] <n)
             {
 				//Fill in the code below
-
-
-
+                cur += a[cur];
+                my_data->b[my_data->moves++] = cur;
             }
             else
             {
@@ -90,16 +89,15 @@ void* SolvePuzzle(void* threadarg)
             if(cur - a[cur] >= 0 && cur - a[cur] <n)
             {
                 //Fill in the code below
-
-
-
+                cur -= a[cur];
+                my_data->b[my_data->moves++] = cur;
             }
             else
             {
 				//set the number of moves to -1
 				//Fill in the code below
-
-
+                my_data->moves = -1;
+                pthread_exit(NULL);
             }
         }
     }
