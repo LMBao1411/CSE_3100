@@ -5,7 +5,7 @@
 void *task(void *arg) {
   int *v = (int *)arg;
   printf("Task is running on value %d\n", *v);
-  sleep(10);
+  sleep(5);   // Both threads sleep, but they may wake up in different order
   printf("Done with task on value %d\n", *v);
   pthread_exit(NULL);
 }

@@ -48,6 +48,7 @@ int main(int argc, char *argv[]) {
   struct thread_data thread_data_array[NUM_THREADS];
   int rc, t;
   for (t = 0; t < NUM_THREADS; t++) {
+    // It divides the array a[0..n-1] into equal segments
     thread_data_array[t].thread_num = t;
     thread_data_array[t].i = t * n / NUM_THREADS;
     thread_data_array[t].j = (t + 1) * n / NUM_THREADS - 1;

@@ -12,6 +12,10 @@ void *increase(void *arg) {
   pthread_exit(NULL);
 }
 
+// shared variable
+// this could lead to the assembly code instructions switch out of order in tid1 and tid2
+// so we could lose an increment
+
 int main(int argc, char *argv[]) {
   pthread_t tid1, tid2;
 
