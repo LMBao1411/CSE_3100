@@ -25,16 +25,16 @@ When does a thread die?
     + note that exit() is called when main() returns
     Any thread can bring down the whole castle
 
-function given to a thread always return void *
-only take one argument (void *arg)
-    - void * thread_main(void * arg)
+function given to a thread always return void*
+only take argument (void* arg)
+    void* thread_main(void* arg)
 
 int pthread_create(
         pthread_t* thread,
         pthread_attr_t* attr,
         void* (*start_routine)(void*),
-        void* arg
-        );
+        void* arg);
+
 Returns 0 if successful, and non-zero (> 0) if error
 *thread is the returned thread ID, if successful
 attr specifies the attribute for the thread. NULL for default.
@@ -43,8 +43,11 @@ void * arg is passed to start_routine()
 • Thread equivalent of fork(), but it does create (not "clone")
 
 pthread t;
-pthread_create(&t, NULL, thread_func, (void*)arg of thread_func);
+pthread_create(&t, NULL, thread_func, (void*) &args of thread_func);
 
+(void *)&var	    The memory address	        Single variables where scope is managed.
+(void *)&struct	    Address of a container	    When you need to pass 2+ arguments.
+(void *)NULL	    Nothing	                    When the thread doesn't need input.
 
 Thread Termination
 void pthread_exit(void* status)
