@@ -15,7 +15,7 @@ struct thread_data {
 void *PrintHello(void *threadarg) {
   struct thread_data *my_data = (struct thread_data *)threadarg;
 
-  sleep(10 + 5 * (my_data->thread_num % 2));
+  sleep(5 + 2 * (my_data->thread_num % 2));
 
   my_data->len = strlen(my_data->message);
   printf("Thread #%d: %s  length=%d\n", my_data->thread_num, my_data->message,

@@ -1,6 +1,5 @@
 // In this example, we use large number of threads to simulate random walkers
-// We calculate the fraction of random walkers that returns to the starting
-// point
+// We calculate the fraction of random walkers that returns to the starting point
 #include <assert.h>
 #include <pthread.h>
 #include <stdio.h>
@@ -44,7 +43,7 @@ int main(int argc, char *argv[]) {
   struct thread_data thread_data_array[NUM_THREADS];
   int rc, t;
 
-  srand(12345);
+  srand(42067);
   for (t = 0; t < NUM_THREADS; t++) {
     thread_data_array[t].thread_num = t;
     // printf("Creating thread #%d\n", t);
