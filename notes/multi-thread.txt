@@ -1,0 +1,8 @@
+multi-thread running:
+cpu doesnt run the instructions all paralelly, execution order are different and depends on cpu to let which thread to run first
+it's so fast that it seems like it was done paralelly
+
+however in a shared state:
+this could lead to the assembly code instructions switch out of order in tid1 and tid2
+so we could lose an increment
+
