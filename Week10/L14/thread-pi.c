@@ -65,3 +65,10 @@ int main(int argc, char *argv[]) {
   printf("PI = %.18Lf\n", sum);
   return 0;
 }
+
+// 1. Create a global array pi[20] to store results
+// 2. Create 20 threads
+// 3. Each thread gets a unique index n (0–19) via thread_data
+// 4. Each thread computes one term and writes it to pi[n]
+// 5. Main thread waits for all threads using pthread_join
+// 6. After all threads finish, main computes the final sum using pi[n] and scaling
