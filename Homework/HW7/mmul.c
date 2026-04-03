@@ -15,6 +15,19 @@ typedef struct {
 static void * thread_main(void * p_arg)
 {
     // TODO
+    thread_arg_t *arg = (thread_arg_t *) p_arg;
+    TMatrix *m = arg->m;
+    TMatrix *n = arg->n;
+    TMatrix *t = arg->t;
+
+    for (unsigned int i = 0; i < m->nrows; i++)  {
+        for (unsigned int j = 0; j < n->ncols; j++) {
+            TElement sum = (TElement)0;
+            for (unsigned int k = 0; k < m->ncols; k++)
+                sum += m->data[i][k] * n->data[k][j];
+            t->data[i][j] = sum;
+        }
+    }
     return NULL;
 }
 
@@ -36,5 +49,24 @@ TMatrix * mulMatrix_thread(TMatrix *m, TMatrix *n)
         return t;
 
     // TODO
+    pthread_t threads[NUM_THREADS];
+    thread_arg_t args[NUM_THREADS];
+    for (int i=0; i<NUM_THREADS; i++) {
+        args[i].id = i;
+        args[i].m = m;
+        args[i].n = n;
+        args[i].t = t;
+        if (pthread_create(&threads[i], NULL, thread_main, &args[i]) != 0) {
+            perror("pthread_create failed");
+            exit(1);
+        }
+    }
+    for (int i = 0; i < NUM_THREADS; i++) {
+        if (pthread_join(threads[i], NULL) != 0) {
+            perror("pthread_join failed");
+            exit(1);
+        }
+    }
+
     return t;
 }
