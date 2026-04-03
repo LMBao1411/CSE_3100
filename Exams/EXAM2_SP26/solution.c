@@ -50,6 +50,9 @@ int main(int argc, char *argv[]) {
         // close after using
         close(p_c1[0]); close(c1_c2[1]); close(c2_c1[0]); close(c1_p[1]);
 
+        //CLOSE UNUSED ONES
+        close(p_c2[0]); close(p_c2[1]); close(c2_p[0]); close(c2_p[1]);
+
         exit(0);
     }
 
@@ -81,7 +84,7 @@ int main(int argc, char *argv[]) {
         close(c1_c2[0]); close(c2_p[1]); close(p_c2[0]); close(c2_c1[1]);
 
         // close off all open pipe ends when forked again
-        close(p_c1[1]); close(c1_p[0]); close(c1_c2[0]); close(c2_c1[1]);
+        close(p_c1[1]); close(c1_p[0]); close(c1_c2[0]); close(c2_c1[1]); close(p_c1[0]); close(c1_p[1]);
 
         exit(0);
     }
@@ -117,6 +120,8 @@ int main(int argc, char *argv[]) {
     // close everything after finishing
     close(p_c1[0]); close(c1_p[1]); close(c1_c2[1]); close(c2_c1[0]);
     close(c1_c2[0]); close(c2_p[1]); close(p_c2[0]); close(c2_c1[1]);
+    close(c1_c2[0]); close(c1_c2[1]); 
+    close(c2_c1[0]); close(c2_c1[1]);
 
     return 0;
 }
