@@ -1,0 +1,39 @@
+idea: Lock the resource while using it. Cannot lock if it is already locked. Wait if the resource is already locked
+Mutex
+Semantics
+• At most one thread can acquire the lock at any time
+• If a thread “loses” a race, it falls asleep
+• Sleepy threads wake up when the lock is released
+We can use variable x in previous example to protect any critical sections
+
+typedef struct MyRecord {
+    pthread_mutex_t myLock;
+    int myValue;
+} MyRec;
+MyRec* makeARecord() {
+    MyRec* rec = (MyRec*)malloc(sizeof(MyRec));
+    pthread_mutex_init(&rec->myLock,NULL);
+    rec->myValue = 0;
+    return rec; }
+
+void freeARecord(MyRec* rec) {
+pthread_mutex_destroy(&rec->myLock);
+free(rec); }
+
+void incrementRecordValue(MyRec* rec) {
+pthread_mutex_lock(&rec->myLock);
+rec->myValue = rec->myValue + 1;
+pthread_mutex_unlock(&rec->myLock); }
+
+
+initializtion: pthread_mutex_init(&rec->myLock,NULL);
+destruction: pthread_mutex_destroy(pthread_mutex_t * mutex);
+lock: pthread_mutex_lock(pthread_mutex_t * mutex);
+unlock: pthread_mutex_unlock(pthread_mutex_t * mutex);
+LOCK AND UNLOCK COME IN PAIRS
+
+You need ONE MUTEX per “thing” you wish to protect
+• That’s why we package the integer and the mutex in a struct
+• The mutex protects just that integer
+• And nothing else!
+• Lock is blocking
