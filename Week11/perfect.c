@@ -17,6 +17,8 @@ void *increase(void *arg) {
     pthread_exit(NULL);
 }
 
+/*have a local that runs in each thread*/
+
 
 int main(int argc, char *argv[]) {
   pthread_mutex_init(&mtx, NULL);
