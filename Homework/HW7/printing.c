@@ -139,6 +139,19 @@ void printer_single(printer_t *pprinter)
 void * printer_main(void * arg)
 {
     // TODO
+    printer_t* parg = arg;
+    while (1) {
+        pthread_mutex_lock(&parg->jq->mutex);
+        if (q_num_jobs(parg->jq) == 0) {
+            pthread_mutex_unlock(&parg->jq->mutex);
+            break;
+        }
+        int job_time = q_fetch_job(parg->jq, parg->id);
+        pthread_mutex_unlock(&parg->jq->mutex);
+
+        print_job(job_time);
+        ++parg->njobs;
+    }
     return arg;
 }
 
@@ -199,7 +212,20 @@ int main(int argc, char *argv[])
      *      wait for other threads
      *  Also, properly init and desctroy mutex.
      *  */
+    pthread_mutex_init(&job_queue.mutex, NULL);
 
+    for (int i = 0; i < num_printers; ++i) {
+        printers[i].id = i;
+        printers[i].jq = &job_queue;
+        printers[i].njobs = 0;
+        pthread_create(&printers[i].thread_id, NULL, printer_main, printers+i);
+    }
+
+    for (int i = 0; i < num_printers; ++i) {
+        pthread_join(printers[i].thread_id, NULL);
+    }
+
+    pthread_mutex_destroy(&job_queue.mutex);
     q_destroy(&job_queue);
 
     print_printer_summary(printers, num_printers);
