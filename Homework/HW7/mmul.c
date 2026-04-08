@@ -20,12 +20,13 @@ static void * thread_main(void * p_arg)
     TMatrix *n = arg->n;
     TMatrix *t = arg->t;
 
-    for (unsigned int i = 0; i < m->nrows; i++)  {
-        for (unsigned int j = 0; j < n->ncols; j++) {
-            TElement sum = (TElement)0;
-            for (unsigned int k = 0; k < m->ncols; k++)
-                sum += m->data[i][k] * n->data[k][j];
-            t->data[i][j] = sum;
+    for (unsigned int row = arg->id; row < t->nrows; row += NUM_THREADS) {
+        for (unsigned int col = 0; col < t->ncols; ++col) {
+            TElement dot_product = 0;
+            for (unsigned int i = 0; i < m->ncols; ++i) {
+                dot_product += m->data[row][i] * n->data[i][col];
+            }
+            t->data[row][col] = dot_product;
         }
     }
     return NULL;
