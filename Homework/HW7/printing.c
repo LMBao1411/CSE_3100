@@ -1,4 +1,4 @@
-#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -140,11 +140,11 @@ void * printer_main(void * arg)
 {
     // TODO
     printer_t* parg = arg;
-    while (1) {
+    while (1) {         // loop forever
         pthread_mutex_lock(&parg->jq->mutex);
         if (q_num_jobs(parg->jq) == 0) {
             pthread_mutex_unlock(&parg->jq->mutex);
-            break;
+            break;          // ...until there are no jobs left
         }
         int job_time = q_fetch_job(parg->jq, parg->id);
         pthread_mutex_unlock(&parg->jq->mutex);
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
     int num_jobs = DEFAULT_NUM_JOBS;
     int demo = 0;
 
-    int i, status;
+    int i;
     for (i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
             num_printers = atoi(argv[++i]);
