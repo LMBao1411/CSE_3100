@@ -1,0 +1,70 @@
+producer vs consumer PROBLEM
+- Producer(s) put things into a shared buffer
+- Consumer(s) take them out!
+Synchronization
+• Consumer(s) must WAIT if buffer is empty
+• Producer(s) must WAIT if buffer is full
+
+
+Condition variable: A handshake mechanism to say: “There is data for you to use”
+
+Consumer waits on condition
+pthread_mutex_t buffer_lock;
+
+/* Consumer fetches data from a buffer, one each time.
+pthread_mutex_lock(& buffer_lock);      // Get the lock for the buffer
+
+while (! nElements > 0) {               // keep waiting if buffer is empty
+    wait for someone telling me data is ready!
+}
+
+data = fetch_from_buffer();             // fetch data from the buffer
+pthread_mutex_unlock(& buffer_lock);
+// Continue to process data */
+
+
+pthread_cond API
+#include <pthread.h>
+pthread_cond_t cond;            // Declare a condition variable
+
+int pthread_cond_init(pthread_cond_t * cond,
+                        const pthread_condattr_t * attr);
+
+int pthread_cond_destroy(pthread_cond_t *cond);
+
+int pthread_cond_wait(pthread_cond_t *cond,
+                        pthread_mutex_t *mutex);
+
+int pthread_cond_signal(pthread_cond_t *cond);
+
+int pthread_cond_broadcast(pthread_cond_t *cond);
+
+
+Typical structure of using mutex and condition
+pthread_mutex_t mutex;
+pthread_cond_t cond; // mutex and cond are defined somewhere
+
+pthread_mutex_lock(&mutex);                 // Get the mutex
+while (! predicate ) {                  // check the predicate
+    pthread_cond_wait(&cond, &mutex);   // wait on the condition, mutex is unlocked!
+    do_something();                     // if needed. mutex is locked here!!!
+}
+access_shared_resources();      // safe to access the share resources
+pthread_mutex_unlock(&mutex);
+
+// continue to perform other tasks, for example, process fetched data.
+// Note that access_shared_resources() should be short.
+
+
+Signal vs. Broadcast
+pthread_cond_signal(pthread_cond_t *cond);
+• Wakes up one waiting thread in the condition
+
+pthread_cond_broadcast(pthread_cond_t *cond);
+• Wakes up all waiting threads in the condition
+• Yet, only one of the waiting threads can grab the mutex
+• Go back to sleep if it fails
+
+Caveat: a thread calling wait after the broadcast will not wake up (even if
+others in the process of waking up are still stuck in the condition variable
+— e.g., waiting on getting the mutex lock —)
