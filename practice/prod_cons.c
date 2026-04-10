@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define BUFFERSIZE 13
+#define BUFFERSIZE 12
 
 int buffer[BUFFERSIZE];
 int count = 0;      // number of items in the buffer
@@ -36,51 +36,51 @@ void cleanup_sync_objects() {
 }
 
 void *producer_func(void *arg) {
-    int items[5];
+    int items[4];
     
     while (1) {
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<4; i++) {
             items[i] = rand() % 100;
         }
         pthread_mutex_lock(&mutex);
 
-        while (count + 5 > BUFFERSIZE) {
+        while (count + 4 > BUFFERSIZE) {
             printf("producer enters waiting while loop\n");
             pthread_cond_wait(&cond_producer, &mutex);
         }
 
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<4; i++) {
             buffer[count++] = items[i];
             printf("Produced: %d\n", items[i]);
         }
 
         pthread_cond_signal(&cond_consumer);
         pthread_mutex_unlock(&mutex);
-        sleep(3);
+        sleep((rand()%5));
     }
 }
 
 void *consumer_func(void *arg) {
-    int items[3];
+    int items[2];
 
     while (1) {
         pthread_mutex_lock(&mutex);
 
-        while (count < 3) {
+        while (count < 2) {
             printf("consumer enters waiting while loop\n");
             pthread_cond_wait(&cond_consumer, &mutex);
             printf("signal\n");
             
         }
 
-        for (int i=0; i < 3; i++) {
+        for (int i=0; i < 2; i++) {
             items[i] = buffer[count--];
             printf("Consumed: %d\n", items[i]);
         }
 
         pthread_cond_signal(&cond_producer);
         pthread_mutex_unlock(&mutex);
-        sleep(2);
+        sleep(rand()%3);
     }
 }
 
