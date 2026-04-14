@@ -1,0 +1,24 @@
+Readers-Writers Problem
+mnay readers can read at once but only one can write
+1. readers need to wait for writer to finish writing to read
+2. writer needs to wait for all readers to finish reading to write
+3. writers also needs to wait for other writers to finish
+
+pthread read-write locks for READING
+First lock function locks for reading
+    • A thread gets read lock if and only if no writer has the lock and no writer is blocked on the lock
+    • More than one thread can get the read lock
+
+pthread read-write locks for WRITING
+Second lock function locks for writing
+    • A thread gets write lock if and only if no reader or writer has the lock
+    • Wait for read lock, too !
+    • Only one writer is allowed at any time
+
+
+BARRIER
+Purpose:
+• For applications where work is done in “phases”
+• Must have “worker” threads wait for the entire “group” to be done
+before proceeding to next phase
+• Number of workers known a priority
