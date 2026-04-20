@@ -1,0 +1,45 @@
+A SOCKET IS A FILE descriptor
+Create a socket
+#include <sys/types.h>
+#include <sys/socket.h>
+int socket(int domain, int type, int protocol);
+// Use close() to close a socket
+Returns a file descriptor for the given domain, type, and protocol.
+Returns -1 on error.
+domain: AF_INET, AF_INET6, etc.
+type: SOCK_STREAM, SOCK_DGRAM, etc.
+protocol: 0.
+
+
+Send and recv for TCP
+ssize_t send(int sfd,const void *buf,size_t len,int flags);
+ssize_t recv(int sfd, void *buf, size_t len, int flags);
+    Return the number of bytes that have been sent/received
+    It can be less than the number of bytes requested!
+    sent does not mean delivered!
+    Both returns -1 on errors
+• Similar to read() and write()
+• You can use read and write if you do not need flags
+• Working with TCP (not UDP)
+
+Example: send
+After a connection is established !
+// To send n bytes stored in buf
+sent = 0;
+while (sent < n) {
+    int r = send(sid, buf + sent, n - sent, 0);
+    if (r < 0) report_error();
+    sent += r;
+}
+
+Example: recv
+After a connection is established !
+// To receive n bytes into buf
+received = 0;
+while (received < n) {
+    int r = recv(sid, buf + received, n - received, 0);
+    if (r < 0) report_error();
+    received += r;
+}
+
+a socket binds to a fd, it accepts the connection, and then creat a new socket (newfd) to talk back to the socketx  
