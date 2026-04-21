@@ -13,6 +13,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "pthread_barrier.h"
+#include "rw_lock.h"
 
 #define NUM 10000
 int count = 0;
