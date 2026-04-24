@@ -4,25 +4,25 @@ to not increase the complexity of the input files,
 I will just have the target file to run and its corresponding commands + parameters + stdins to run
 (not having a target file that will need another file to run)
 
-------------------
+- (indicates there will be a test after "-")
 test1
     name: {}
     commands: {}
     parameters: {}
     expected_output: {}
-------------------
+-
 test2
     name: {}
     commands: {}
     parameters: {}
     expected_output: {}
-------------------
+-
 test3
     name: {}
     commands: {}
     parameters: {}
     expected_output: {}
-******************* (* indicates the end of the input file)
+* ("*" indicates the end of the input file, no more tests to run)
 
 The parser will try to encode the string into a struct
 
