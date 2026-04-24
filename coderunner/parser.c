@@ -32,5 +32,49 @@ typedef struct {
     STDIN
     EXPECTED_OUTPUT
 } Test;
+*/
 
-*/ 
+/*
+OUTLINE OF PARSER
+
+typedef struct {
+    char name[256];
+    char commands[512];
+    char stdin_input[4096];
+    char expected_output[4096];
+    int score;
+} Test
+
+function parser(filename, tests[], *count) {
+    open file
+    *count = 0
+
+    WHILE not end of filename {
+        read line
+
+        if line starts with "*" {
+            break
+        }
+        
+        if line starts with "-" {
+            t = empty Test struct
+
+            WHILE reading the line {
+                IF line starts with '-' or '*': {BREAK}  // end of this test
+
+                IF line contains "name:": {extract value -> t.name}
+
+                IF line contains "command:": {extract value -> t.command}
+
+                IF line contains "stdin:": {extract value -> t.stdin_input}
+
+                IF line contains "expected_output:": {extract value -> t.expected_output}
+
+                IF line contains "score:": {extract int -> t.max_score}
+            }
+        }
+    tests[*count] = t
+    (*count)++
+    }
+}
+*/
