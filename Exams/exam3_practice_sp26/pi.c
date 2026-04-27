@@ -13,28 +13,27 @@ typedef struct thread_arg_tag {
   int id;
   int count;
   int total;
+  char padding[52];
 } thread_arg_t;
 
 double rand_double(unsigned int *s) { return (rand_r(s) / (double)RAND_MAX); }
 
 int generate_points(int n, unsigned int seed) {
-  int count = 0;
-  double x, y;
-  unsigned int s = seed;
-  for (int i = 0; i < n; i++) {
-    x = rand_double(&s);
-    y = rand_double(&s);
-    if (x * x + y * y <= 1) {
-      count++;
+    int count = 0;
+    double x, y;
+    unsigned int s = seed;
+    for (int i = 0; i < n; i++) {
+        x = rand_double(&s);
+        y = rand_double(&s);
+        if (x * x + y * y <= 1)
+            count++;
     }
-  }
-  return count;
+    return count;
 }
 
 void *thread_main(void *thread_arg) {
   thread_arg_t *arg = (thread_arg_t*) thread_arg;
-  unsigned int seed = (unsigned int)time(NULL) ^ (arg->id * 1234567);
-  arg->count = generate_points(arg->total, seed);
+  arg->count = generate_points(arg->total, (unsigned int)arg->id);
   pthread_exit(NULL);
 }
 
@@ -54,14 +53,18 @@ int main(int argc, char *argv[]) {
 
   pthread_t thread_arr[n_threads];
   thread_arg_t thread_args[n_threads];
-  int points_per_thread = n / n_threads;  // Base samples per thread: n / n_threads.  
+  int base = n / n_threads;  // Base samples per thread: n / n_threads.  
   int remainder = n % n_threads;    // Remainder: n % n_threads. You can give these extra points to the last thread.
 
   for (int i = 0; i < n_threads; i++) {
     thread_args[i].id = i;
-    thread_args[i].total = points_per_thread;
-    if (i == n_threads - 1) {
-      thread_args[i].total = thread_args[i].total + remainder;
+    thread_args[i].count = 0;
+    thread_args[i].total = base;
+    if (i < remainder) {
+      thread_args[i].total = base + 1;
+    }
+    else {
+      thread_args[i].total = base;
     }
     pthread_create(&thread_arr[i], NULL, thread_main, &thread_args[i]);
   }
