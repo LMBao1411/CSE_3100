@@ -1,0 +1,22 @@
+process - isolated virtual memory space, but a process is a copy of the entire memory space -> expensive
+hence we use thread to run individual piece of code/functions inside a process, dont want to clone a whole process
+
+each process has a main thread, each thread can clone itself
+pass in a local variable for pthread_exit(), the variable will be discarded because the call is in the stack
+
+after craeating a thread, need to call join to wait for other workers thread. if not called, main thread will just finish by itself 
+and when the thread is done, all other threads will die.
+
+Mutex - a variable to give exclusive access for a thread to use a shared resource
+aim towards correctness first and then performance
+only use mutex to a variable that is being manipulated by many threads or there is a RACE CONDITION
+some are reading and some are writing, even if reading it still need to be locked
+
+number of cores do matter
+lets say 20 threads operations and 10 cores
+they will split up the performance, cpus being shared
+
+conditional variable
+a predicate in a while to check for if buffer is good to use or not, if not keep waiting
+broadcast - signal to all consumers
+signal is only towards one
