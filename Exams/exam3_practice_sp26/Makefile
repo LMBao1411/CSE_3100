@@ -1,4 +1,4 @@
-TARGETS=coins pi pis 
+TARGETS=coins pi
 CC=cc
 all : $(TARGETS)
 
