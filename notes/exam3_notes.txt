@@ -12,6 +12,8 @@ aim towards correctness first and then performance
 only use mutex to a variable that is being manipulated by many threads or there is a RACE CONDITION
 some are reading and some are writing, even if reading it still need to be locked
 
+pthread_exit() do not automatically release all the mutexes as it exits the threads
+
 number of cores do matter
 lets say 20 threads operations and 10 cores
 they will split up the performance, cpus being shared
@@ -20,3 +22,18 @@ conditional variable
 a predicate in a while to check for if buffer is good to use or not, if not keep waiting
 broadcast - signal to all consumers
 signal is only towards one
+
+a barrier can be implemented using a mutex with conditional variable
+The common pattern involves using a mutex to protect a shared counter (tracking how many threads have arrived)
+and a condition variable to make threads wait until the counter reaches the desired thread count.
+
+
+The first parameter in the socket() system call for IPv4 over TCP is AF_INET. 
+This parameter specifies the address family (domain) for the IPv4 protocols
+for IPv6 it's AF_INET6
+
+We CAN use fwrite() and fread() in place of send() and recv() for data transfer on SOCK_STREAM?
+
+Your laptop is connected to a wifi, it can have more than one IP addresses
+
+send() and recv() are blocking
