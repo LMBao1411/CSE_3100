@@ -3,6 +3,11 @@ hence we use thread to run individual piece of code/functions inside a process, 
 
 each process has a main thread, each thread can clone itself
 pass in a local variable for pthread_exit(), the variable will be discarded because the call is in the stack
+threads within the same process share a single common heap and the global variable in the process
+upon success, pthread_create() returns 0
+to free the memory allocated in a thread's function if they are located in the heap, 
+call free() inside the thread worker function before it returns (memory is cleaned up as soon as thread is done using it)
+each thread has its own private stack for local variables, return addresses, and function parameters
 
 after craeating a thread, need to call join to wait for other workers thread. if not called, main thread will just finish by itself 
 and when the thread is done, all other threads will die.
@@ -11,8 +16,8 @@ Mutex - a variable to give exclusive access for a thread to use a shared resourc
 aim towards correctness first and then performance
 only use mutex to a variable that is being manipulated by many threads or there is a RACE CONDITION
 some are reading and some are writing, even if reading it still need to be locked
-
 pthread_exit() do not automatically release all the mutexes as it exits the threads
+if a thread calls pthread_mutex_lock on a mutex that is already locked, the thread will deadlock itself
 
 number of cores do matter
 lets say 20 threads operations and 10 cores
@@ -22,6 +27,7 @@ conditional variable
 a predicate in a while to check for if buffer is good to use or not, if not keep waiting
 broadcast - signal to all consumers
 signal is only towards one
+spurious wakeup occur when a thread returns from a wait without an explicit signal, which is my the while-loop is necessary
 
 a barrier can be implemented using a mutex with conditional variable
 The common pattern involves using a mutex to protect a shared counter (tracking how many threads have arrived)
@@ -32,8 +38,15 @@ The first parameter in the socket() system call for IPv4 over TCP is AF_INET.
 This parameter specifies the address family (domain) for the IPv4 protocols
 for IPv6 it's AF_INET6
 
-We CAN use fwrite() and fread() in place of send() and recv() for data transfer on SOCK_STREAM?
+We CAN use fwrite() and fread() in place of send() and recv() for data transfer on SOCK_STREAM
+SOCK_STREAM is used for TCP, which provides reliable, sequenced, and unduped data
 
 Your laptop is connected to a wifi, it can have more than one IP addresses
 
 send() and recv() are blocking
+listen() transitions a socket to the passive listening state to wait for a connection request
+accept() extract a connection from the queue of a listening socket, not to set the socket to listen
+accept() returns a new socket for the specific client, while the original socket continues to listen for new connections
+bind() used to assign a specific local address (IP address and port number) to a socket
+connect() a system call used primarily by a client application to establish a connection with a remote server
+recv() returns 0 to signal that the connection has been closed and no more data is coming

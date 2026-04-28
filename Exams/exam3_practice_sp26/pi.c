@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 
   pthread_t thread_arr[n_threads];
   thread_arg_t thread_args[n_threads];
-  int base = n / n_threads;  // Base samples per thread: n / n_threads.  
+  int base = n / n_threads;         // Base samples per thread: n / n_threads.  
   int remainder = n % n_threads;    // Remainder: n % n_threads. You can give these extra points to the last thread.
 
   for (int i = 0; i < n_threads; i++) {

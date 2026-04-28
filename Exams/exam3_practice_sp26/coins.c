@@ -29,8 +29,7 @@ void *counter(void *t) {
   int *p_count = arg->p_count;
   data_t *pdata = arg->pdata;
 
-  int done = 0;
-  while (!done) {
+  while (1) {
     pthread_mutex_lock(&pdata->mutex);
 
     // Wait while there is no data for counter to use AND the tosser is still active
@@ -38,11 +37,13 @@ void *counter(void *t) {
       pthread_cond_wait(&pdata->cond[id], &pdata->mutex);
     }
 
+    // Exit condition: No more coins to toss and no pending data for this thread
     if (pdata->ready == 0 && pdata->n == 0) {
       pthread_mutex_unlock(&pdata->mutex);
       break;
     }
 
+    // If data is ready and it matches this counter's ID
     if (pdata->ready && pdata->data == id) {
       (*p_count)++;
       pdata->ready = 0;
@@ -59,13 +60,19 @@ void *tosser(void *t) {
   int id = arg->id;
   data_t *pdata = arg->pdata;
   unsigned s = id;
-  int done = 0;
-
-  while (!done) {
+  
+  while (1) {
     pthread_mutex_lock(&pdata->mutex);
 
+    // Wait for the previous coin to be consumed
     while (pdata->ready == 1) {
       pthread_cond_wait(&pdata->cond_toss, &pdata->mutex);
+    }
+
+    // Check if we have completed the requested number of tosses
+    if (pdata->n <= 0) {
+      pthread_mutex_unlock(&pdata->mutex);
+      break;
     }
 
     int c1 = rand_r(&s) & 1;
@@ -73,20 +80,21 @@ void *tosser(void *t) {
     int c3 = rand_r(&s) & 1;
     int c4 = rand_r(&s) & 1;
     int c = (c1 << 3) | (c2 << 2) | (c3 << 1) | c4;
+
     pdata->data = c;
     pdata->ready = 1;
     pdata->n = pdata->n - 1;
-    if (pdata->n == 0) {
-      done = 1;
-    }
 
+    // Wake up the specific counter for this result
     pthread_cond_signal(&pdata->cond[c]);
 
-    if (done) {
-      for (int i = 0; i < NUM_COUNTERS; i++){
+    // If this was the last coin, wake up all counters so they can exit
+    if (pdata->n == 0) {
+      for (int i = 0; i < NUM_COUNTERS; i++) {
         pthread_cond_broadcast(&pdata->cond[i]);
       }
     }
+
     pthread_mutex_unlock(&pdata->mutex);
   }
   pthread_exit(NULL);

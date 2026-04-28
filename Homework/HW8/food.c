@@ -34,8 +34,10 @@ void add_to_buffer(int item, int col, two_d_buffer *p) {
 	while (p->counts[item] >= p->size) {
 		pthread_cond_wait(&p->produce_cond, &p->mutex);
 	}
+
 	p->buf[p->counts[item]++][item] = item;
 	--p->remain;
+
 	pthread_cond_broadcast(&p->consume_cond);
 	pthread_mutex_unlock(&p->mutex);
 }
@@ -44,12 +46,15 @@ void remove_from_buffer(int *a, int *b, int *c, two_d_buffer *p) {
 	// TODO
 	// fill in code below
 	pthread_mutex_lock(&p->mutex);
+
 	while ((p->counts[0] == 0) || (p->counts[1] == 0) || (p->counts[2] == 0)) {
 		pthread_cond_wait(&p->consume_cond, &p->mutex);
 	}
+
 	*a = p->buf[--p->counts[0]][0];
 	*b = p->buf[--p->counts[1]][1];
 	*c = p->buf[--p->counts[2]][2];
+	
 	pthread_cond_broadcast(&p->produce_cond);
 	pthread_mutex_unlock(&p->mutex);
 }
