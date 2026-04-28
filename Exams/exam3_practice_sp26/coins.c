@@ -7,7 +7,7 @@
 #define NUM_COUNTERS 16
 
 typedef struct {
-  int n;                 
+  int n;       // number of toss outcomes remaining to be produced          
   int data;              
   int ready;
   // ready = 0 means no data available counter should wait, tosser needs to produce
@@ -30,13 +30,15 @@ void *counter(void *t) {
   data_t *pdata = arg->pdata;
 
   while (1) {
+    // LOCK MUTEX FIRST
     pthread_mutex_lock(&pdata->mutex);
-
-    // Wait while there is no data for counter to use AND the tosser is still active
+    
+    // PREDICATE CONDITION: Wait while there is no data for counter to use AND the tosser is still active
     while((pdata->ready == 0 || pdata->data != id) && pdata->n > 0) {
       pthread_cond_wait(&pdata->cond[id], &pdata->mutex);
     }
 
+    // OPERATIONS IF READY, and then signal for producer
     // Exit condition: No more coins to toss and no pending data for this thread
     if (pdata->ready == 0 && pdata->n == 0) {
       pthread_mutex_unlock(&pdata->mutex);
@@ -49,7 +51,8 @@ void *counter(void *t) {
       pdata->ready = 0;
       pthread_cond_signal(&pdata->cond_toss);
     }
-
+    
+    // UNLOCK THE MUTEX
     pthread_mutex_unlock(&pdata->mutex);
   }
   pthread_exit(NULL);
@@ -64,11 +67,12 @@ void *tosser(void *t) {
   while (1) {
     pthread_mutex_lock(&pdata->mutex);
 
-    // Wait for the previous coin to be consumed
+    // PREDICATE: Wait for the previous coin to be consumed
     while (pdata->ready == 1) {
       pthread_cond_wait(&pdata->cond_toss, &pdata->mutex);
     }
 
+    // OPERATIONS IF READY, then signal consumer
     // Check if we have completed the requested number of tosses
     if (pdata->n <= 0) {
       pthread_mutex_unlock(&pdata->mutex);
@@ -79,7 +83,7 @@ void *tosser(void *t) {
     int c2 = rand_r(&s) & 1;
     int c3 = rand_r(&s) & 1;
     int c4 = rand_r(&s) & 1;
-    int c = (c1 << 3) | (c2 << 2) | (c3 << 1) | c4;
+    int c = (c1 << 3) | (c2 << 2) | (c3 << 1) | c4;   // 15 outcomes
 
     pdata->data = c;
     pdata->ready = 1;
