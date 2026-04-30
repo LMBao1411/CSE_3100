@@ -43,8 +43,8 @@ int main(int argc, char *argv[]) {
     thread_data_array[t].thread_num = t;
     thread_data_array[t].i = t * n / NUM_THREADS;
     thread_data_array[t].j = (t + 1) * n / NUM_THREADS - 1;
-    rc = pthread_create(&threads[t], NULL, thread_add_one,
-                        &thread_data_array[t]);
+    rc = pthread_create(&threads[t], NULL, thread_add_one, &thread_data_array[t]);
+    
     if (rc) {
       printf("ERROR; return code from pthread_create() is %d\n", rc);
       exit(-1);
