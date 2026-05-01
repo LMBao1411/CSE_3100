@@ -33,6 +33,11 @@ a barrier can be implemented using a mutex with conditional variable
 The common pattern involves using a mutex to protect a shared counter (tracking how many threads have arrived)
 and a condition variable to make threads wait until the counter reaches the desired thread count.
 
+pthread_barrier_t my_barrier;
+pthread_barrier_init(&my_barrier, NULL, THREAD_COUNT);
+pthread_barrier_wait(&my_barrier);
+
+
 ------------------------------------------------------------------------------------------------------------------------------
 The first parameter in the socket() system call for IPv4 over TCP is AF_INET. 
 This parameter specifies the address family (domain) for the IPv4 protocols
