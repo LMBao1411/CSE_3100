@@ -10,6 +10,7 @@ all: $(BINS)
 %: %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-.PHONY: clean
 clean:
-	rm -f $(BINS)
+	rm -f $(BINS) *.o
+
+.PHONY: all clean
