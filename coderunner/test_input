@@ -1,19 +1,19 @@
 -
 test1
-    name: {}
-    commands: {}
-    parameters: {}
-    expected_output: {}
+    name:{Compilation test}
+    commands:{./calc}
+    parameters:{NONE}
+    expected_output:{gcc     calc.c   -o calc}
 -
 test2
-    name: {}
-    commands: {}
-    parameters: {}
-    expected_output: {}
+    name:{IO Test}
+    commands:{./calc}
+    parameters:{1,2}
+    expected_output:{3}
 -
 test3
-    name: {}
-    commands: {}
-    parameters: {}
-    expected_output: {}
+    name:{IO Test}
+    commands:{./calc}
+    parameters:{0}
+    expected_output:{missing int2}
 *

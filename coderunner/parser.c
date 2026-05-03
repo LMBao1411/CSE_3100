@@ -39,20 +39,20 @@ void parse_test(char* filename, Test tests[], int *count) {
     *count = -1;        // Start at -1 so the first '-' bumps it to 0
 
     while (fgets(line, sizeof(line), file)) {
-        if (line[0] == "*") {       // stopping point
+        if (line[0] == '*') {       // stopping point
             break;
         }
-        if (line[0] == "-") {       // detected a new test case block
+        if (line[0] == '-') {       // detected a new test case block
             (*count)++;
             memset(&tests[*count], 0, sizeof(Test));        // memset prevents garbage values
             continue;
         }
 
         if (*count >= 0) {          // only read if a test block exists
-            if (strstr(line, "name: ")) {
+            if (strstr(line, "name:")) {
                 extract_value(line, tests[*count].name);
             }
-            else if (strstr(line, "commads: ")) {
+            else if (strstr(line, "commands:")) {
                 extract_value(line, tests[*count].commands);
             }
             else if (strstr(line, "parameters:")) {
@@ -67,3 +67,23 @@ void parse_test(char* filename, Test tests[], int *count) {
     fclose(file);
 }
 
+int main() {
+    Test tests[100];
+    int count = 0;
+
+    // Parse test file
+    parse_test("test_input", tests, &count);
+
+    // Print parsed results
+    printf("Total tests parsed: %d\n\n", count);
+
+    for (int i = 0; i < count; i++) {
+        printf("Test #%d\n", i + 1);
+        printf("Name: %s\n", tests[i].name);
+        printf("Commands: %s\n", tests[i].commands);
+        printf("Input: %s\n", tests[i].stdin_input);
+        printf("Expected Output: %s\n", tests[i].expected_output);
+    }
+
+    return 0;
+}

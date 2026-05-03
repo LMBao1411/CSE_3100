@@ -2,13 +2,14 @@ CC = gcc
 CFLAGS = -Wall -Wextra -g
 
 SRCS = $(wildcard *.c)
-OBJS = $(SRCS:.c=.o)
 
-all: $(OBJS)
+BINS = $(SRCS:.c=)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+all: $(BINS)
+
+%: %.c
+	$(CC) $(CFLAGS) -o $@ $<
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS)
+	rm -f $(BINS)
