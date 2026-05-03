@@ -1,69 +1,39 @@
-parser.c
+Overview
+How to run coderunner
+1. prepare files to run
+2. fill out the test_input file
+3. compile all files
+4. run ./main
+5. results.json will be produced
+
+
+
+Description of each function: 
+
+parser.c 
 parse the input file containing all the information needed to run the target file
 the goal is to extract the strings from the input file and store it in an array or a struct
 to not increase the complexity of the input files, 
 I will just have the target file to run and its corresponding commands + parameters + stdins to run
 (not having a target file that will need another file to run)
 
-- (indicates there will be a test after "-")
-test1
-    name: {}
-    commands: {}
-    parameters: {}
-    expected_output: {}
--
-test2
-    name: {}
-    commands: {}
-    parameters: {}
-    expected_output: {}
--
-test3
-    name: {}
-    commands: {}
-    parameters: {}
-    expected_output: {}
-* ("*" indicates the end of the input file, no more tests to run)
+executor.c
+get the parameters needed for execvp to run
+fork() a child process
+Set up pipes for stdin/stdout capture
+Use execvp() to run the command
+Need to handle infinite loops + seg faults + memory overflow + etc.
 
-The parser will try to encode the string into a struct
+output.c 
+take the output from the input file and compare with the expected output
+then generate the JSON file which the format could be referenced from the pyhthon implementation
 
-OUTLINE OF PARSER.C
-
-typedef struct {
-    char name[256];
-    char commands[512];
-    char stdin_input[4096];
-    char expected_output[4096];
-    int score;
-} Test
-
-function parser(filename, tests[], *count) {
-    open file
-    *count = 0
-
-    WHILE not end of filename {
-        read line
-
-        if line starts with "*" {
-            break
-        }
-        
-        if line starts with "-" {
-            t = empty Test struct
-
-            WHILE reading the line {
-                IF line starts with '-' or '*': {BREAK}  // end of this test
-
-                IF line contains "name:": {extract value -> t.name}
-
-                IF line contains "command:": {extract value -> t.command}
-
-                IF line contains "stdin:": {extract value -> t.stdin_input}
-
-                IF line contains "expected_output:": {extract value -> t.expected_output}
-            }
-        }
-        tests[*count] = t
-    (*count)++
-    }
-}
+main.c
+call parser.c to run and retrieve data into array of structs
+set up file descriptors to redirect input / output to retrieve the data
+set up child process to run execvp
+redirect file descriptors and create communicating pipe channel to retrive output of the test cases into something that we can stored and process later
+call executor.c to run all the test cases for the file
+deal with edge cases: infinity loops, seg fault, memory overflow
+        via having exit status, error flags, runtime flags, etc.
+call output.c to run and print results from test cases into a JSON file (reults.json)

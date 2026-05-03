@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 typedef struct {
@@ -17,7 +16,7 @@ void extract_value(const char *line, char *dest) {
     char *start = strchr(line, '{');
     char *end = strrchr(line, '}');
     
-    if (start && end && end > start) {
+    if (start && end && (end > start)) {        // validate a string is inside {} AND is in the correct order
         int len = end - start - 1;
         if (len > 0) {
             strncpy(dest, start + 1, len);
@@ -38,7 +37,8 @@ void comma_replace(char *str) {
     }
 }
 
-/*MAIN PARSER FUNCTION - parameters: filename, array to store parsed test cases, ptr keeping track of how many tests are loaded*/ 
+// MAIN PARSER FUNCTION
+// parameters: filename, array to store parsed test cases, ptr keeping track of how many tests are loaded
 void parse_test(char* filename, Test tests[], int *count) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -83,11 +83,7 @@ void parse_test(char* filename, Test tests[], int *count) {
 // int main() {
 //     Test tests[100];
 //     int count = 0;
-
-//     // Parse test file
 //     parse_test("test_input", tests, &count);
-
-//     // Print parsed results
 //     for (int i = 0; i < count; i++) {
 //         printf("Test #%d\n", i + 1);
 //         printf("Name: %s\n", tests[i].name);
@@ -95,6 +91,5 @@ void parse_test(char* filename, Test tests[], int *count) {
 //         printf("Input: %s\n", tests[i].stdin_input);
 //         printf("Expected Output: %s\n", tests[i].expected_output);
 //     }
-
 //     return 0;
 // }

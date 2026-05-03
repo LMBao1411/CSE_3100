@@ -23,7 +23,6 @@ function execute_test(test, result_output[], *exit_status) {
 
     if pid == 0 {   // CHILD
         close unused pipes
-
     }
 
 }

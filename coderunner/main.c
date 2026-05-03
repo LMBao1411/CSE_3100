@@ -20,6 +20,15 @@ free up memory, close file descriptors end, make sure nothing is left open or le
 
 check with valgrind
 */
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <parser.h>
+#include <executor.h>
+#include <output.h>
+
+
 int main() {
     return 0;
 }
