@@ -1,8 +1,4 @@
-TEST INPUT FILE 
-can be anything of format but need to be as simple for my own usage as possible
-could be something like this
-
-- (indicates there will be a test after "-")
+-
 test1
     name: {}
     commands: {}
@@ -20,4 +16,4 @@ test3
     commands: {}
     parameters: {}
     expected_output: {}
-* ("*" indicates the end of the input file, no more tests to run)
+*
