@@ -10,7 +10,9 @@ typedef struct {
     char expected_output[4096];
 } Test;
 
-// HERLPER FUNCTION: Extracts content between { and } into 'dest'
+// -----HERLPER FUNCTIONS----- 
+
+// Extracts content between { and } into 'dest'
 void extract_value(const char *line, char *dest) {
     char *start = strchr(line, '{');
     char *end = strrchr(line, '}');
@@ -23,6 +25,15 @@ void extract_value(const char *line, char *dest) {
         } 
         else {
             dest[0] = '\0';
+        }
+    }
+}
+
+// Replace commas with space in parameters test field
+void comma_replace(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == ',') {
+            str[i] = ' ';
         }
     }
 }
@@ -57,6 +68,7 @@ void parse_test(char* filename, Test tests[], int *count) {
             }
             else if (strstr(line, "parameters:")) {
                 extract_value(line, tests[*count].stdin_input);
+                comma_replace(tests[*count].stdin_input);
             } 
             else if (strstr(line, "expected_output:")) {
                 extract_value(line, tests[*count].expected_output);
@@ -67,23 +79,22 @@ void parse_test(char* filename, Test tests[], int *count) {
     fclose(file);
 }
 
-int main() {
-    Test tests[100];
-    int count = 0;
+// DEBUGGING
+// int main() {
+//     Test tests[100];
+//     int count = 0;
 
-    // Parse test file
-    parse_test("test_input", tests, &count);
+//     // Parse test file
+//     parse_test("test_input", tests, &count);
 
-    // Print parsed results
-    printf("Total tests parsed: %d\n\n", count);
+//     // Print parsed results
+//     for (int i = 0; i < count; i++) {
+//         printf("Test #%d\n", i + 1);
+//         printf("Name: %s\n", tests[i].name);
+//         printf("Commands: %s\n", tests[i].commands);
+//         printf("Input: %s\n", tests[i].stdin_input);
+//         printf("Expected Output: %s\n", tests[i].expected_output);
+//     }
 
-    for (int i = 0; i < count; i++) {
-        printf("Test #%d\n", i + 1);
-        printf("Name: %s\n", tests[i].name);
-        printf("Commands: %s\n", tests[i].commands);
-        printf("Input: %s\n", tests[i].stdin_input);
-        printf("Expected Output: %s\n", tests[i].expected_output);
-    }
-
-    return 0;
-}
+//     return 0;
+// }

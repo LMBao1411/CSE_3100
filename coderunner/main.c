@@ -20,3 +20,6 @@ free up memory, close file descriptors end, make sure nothing is left open or le
 
 check with valgrind
 */
+int main() {
+    return 0;
+}

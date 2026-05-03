@@ -1,16 +1,26 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 
-SRCS = $(wildcard *.c)
+# Main executable name
+TARGET = main
 
-BINS = $(SRCS:.c=)
+# All source files
+SRCS = main.c parser.c executor.c output.c
 
-all: $(BINS)
+# Object files
+OBJS = $(SRCS:.c=.o)
 
-%: %.c
-	$(CC) $(CFLAGS) -o $@ $<
+all: $(TARGET)
+
+# Link all object files into final program
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+# Compile each .c into .o
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(BINS) *.o
+	rm -f $(TARGET) *.o
 
 .PHONY: all clean

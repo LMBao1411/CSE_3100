@@ -29,3 +29,6 @@ function execute_test(test, result_output[], *exit_status) {
 }
 
 */
+void execute_test() {
+    return;
+}
