@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "parser.h"
 
-typedef struct {
-    char name[256];
-    char command[256];
-    char parameters[1024];
-    char expected_output[4096];
-} Test;
+// typedef struct {
+//     char name[256];
+//     char command[256];
+//     char args_str[1024];      
+//     char stdin_input[1024];
+//     char expected_output[4096];
+// } Test;
 
 // -----HERLPER FUNCTIONS----- 
 
@@ -28,7 +30,7 @@ void extract_value(const char *line, char *dest) {
     }
 }
 
-// Replace commas with space in parameters test field
+// Replace commas with space in parameters
 void comma_replace(char *str) {
     for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] == ',') {
@@ -59,16 +61,21 @@ void parse_test(char* filename, Test tests[], int *count) {
             continue;
         }
 
-        if (*count >= 0) {          // only read if a test block exists
+        if (*count >= 0) {
             if (strstr(line, "name:")) {
                 extract_value(line, tests[*count].name);
-            }
+            } 
             else if (strstr(line, "commands:")) {
                 extract_value(line, tests[*count].command);
-            }
+            } 
             else if (strstr(line, "parameters:")) {
-                extract_value(line, tests[*count].parameters);
-                comma_replace(tests[*count].parameters);
+                extract_value(line, tests[*count].args_str);        // Map parameters to args_str
+                if (strcmp(tests[*count].args_str, "NONE") == 0) {
+                    tests[*count].args_str[0] = '\0';               // Clear if NONE
+                } 
+                else {
+                    comma_replace(tests[*count].args_str);
+                }
             } 
             else if (strstr(line, "expected_output:")) {
                 extract_value(line, tests[*count].expected_output);
@@ -80,16 +87,19 @@ void parse_test(char* filename, Test tests[], int *count) {
 }
 
 // DEBUGGING
-// int main() {
-//     Test tests[100];
-//     int count = 0;
-//     parse_test("test_input", tests, &count);
-//     for (int i = 0; i < count; i++) {
-//         printf("Test #%d\n", i + 1);
-//         printf("Name: %s\n", tests[i].name);
-//         printf("Commands: %s\n", tests[i].commands);
-//         printf("Input: %s\n", tests[i].stdin_input);
-//         printf("Expected Output: %s\n", tests[i].expected_output);
-//     }
-//     return 0;
-// }
+#ifdef DEBUG_PARSER
+int main() {
+    Test tests[100];
+    int count = 0;
+    parse_test("test_input", tests, &count);
+    for (int i = 0; i < count; i++) {
+        printf("Test #%d\n", i + 1);
+        printf("Name: %s\n", tests[i].name);
+        printf("Commands: %s\n", tests[i].command);
+        printf("Args: %s\n", tests[i].args_str);
+        printf("Expected Output: %s\n", tests[i].expected_output);
+        printf("\n");
+    }
+    return 0;
+}
+#endif

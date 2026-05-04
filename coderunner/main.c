@@ -13,9 +13,9 @@ check with valgrind
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <parser.h>
-#include <executor.h>
-#include <output.h>
+#include "parser.h"
+#include "executor.h"
+#include "output.h"
 
 
 int main() {

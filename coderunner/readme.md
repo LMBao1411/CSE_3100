@@ -1,4 +1,4 @@
-Overview
+# Overview
 How to run coderunner
 1. prepare files to run
 2. fill out the test_input file
@@ -6,7 +6,11 @@ How to run coderunner
 4. run ./main
 5. results.json will be produced
 
+Test parser only
+gcc -DDEBUG_PARSER parser.c -o parser
 
+Test executor only (includes parser.c for parse_test, but only executor's main is compiled)
+gcc -DDEBUG_EXECUTOR executor.c parser.c -o executor
 
 Description of each function: 
 
