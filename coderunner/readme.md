@@ -19,8 +19,11 @@ I will just have the target file to run and its corresponding commands + paramet
 
 executor.c
 get the parameters needed for execvp to run
-fork() a child process
-Set up pipes for stdin/stdout capture
+set up file descriptors to redirect input / output to retrieve the data
+set up child process to run execvp
+redirect file descriptors and create communicating pipe channel to retrive output of the test cases into something that we can stored and process later
+        fork() a child process
+        Set up pipes for stdin/stdout capture
 Use execvp() to run the command
 Need to handle infinite loops + seg faults + memory overflow + etc.
 
@@ -30,9 +33,6 @@ then generate the JSON file which the format could be referenced from the pyhtho
 
 main.c
 call parser.c to run and retrieve data into array of structs
-set up file descriptors to redirect input / output to retrieve the data
-set up child process to run execvp
-redirect file descriptors and create communicating pipe channel to retrive output of the test cases into something that we can stored and process later
 call executor.c to run all the test cases for the file
 deal with edge cases: infinity loops, seg fault, memory overflow
         via having exit status, error flags, runtime flags, etc.

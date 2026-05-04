@@ -4,8 +4,8 @@
 
 typedef struct {
     char name[256];
-    char commands[512];
-    char stdin_input[4096];
+    char command[256];
+    char parameters[1024];
     char expected_output[4096];
 } Test;
 
@@ -64,11 +64,11 @@ void parse_test(char* filename, Test tests[], int *count) {
                 extract_value(line, tests[*count].name);
             }
             else if (strstr(line, "commands:")) {
-                extract_value(line, tests[*count].commands);
+                extract_value(line, tests[*count].command);
             }
             else if (strstr(line, "parameters:")) {
-                extract_value(line, tests[*count].stdin_input);
-                comma_replace(tests[*count].stdin_input);
+                extract_value(line, tests[*count].parameters);
+                comma_replace(tests[*count].parameters);
             } 
             else if (strstr(line, "expected_output:")) {
                 extract_value(line, tests[*count].expected_output);
