@@ -8,7 +8,6 @@ typedef struct {
     char expected_output[4096];
 } Test;
 
-void comma_replace(char *str);
 void extract_value(const char *line, char *dest);
 void parse_test(char* filename, Test tests[], int *count);
 

@@ -8,24 +8,14 @@
 #include <signal.h>
 #include <time.h>
 #include "parser.h"
+#include "executor.h"
 
-// executor.c needs to return the output from the test + did the test exited successfully/crashed/timedout/seg fault/recursion/etc.
+// ----- HELPER ----- //
 
-typedef struct {
-    char test_output[4096];
-    int exit_status;
-    int crashed;
-    int timed_out;
-    int signal;
-} Test_result;
-
-
-// ----- HELPER FUNCTION ----- //
-
-// Error handling function
-// using signal.h (SIGEGV, SIGABRT, SIGFPE, SGKILL)
+// Error handling function: using signal.h (SIGEGV, SIGABRT, SIGFPE, SGKILL)
+// If it is not a timed_out signal from the child process, error_handler will be called
 void error_handler(int status, Test_result *result) {
-    if (result->timed_out) return; // Handled in the main loop
+    if (result->timed_out) return;
 
     if (WIFEXITED(status)) {
         result->exit_status = WEXITSTATUS(status);
@@ -37,7 +27,6 @@ void error_handler(int status, Test_result *result) {
         result->crashed = 1;
         result->signal = WTERMSIG(status);
         
-        // Append error to any existing partial output and not overwrite it
         char error_msg[128];
         if (result->signal == SIGSEGV) {
             snprintf(error_msg, sizeof(error_msg), "seg fault/stack overflow\n");
@@ -56,7 +45,8 @@ void error_handler(int status, Test_result *result) {
 }
 
 // MAIN EXECUTOR FUNCTION
-// parameters: test struct & return a result struct
+// parameters: test struct
+// return a Test_result struct
 Test_result execute_test(Test *test) {
     Test_result result;
     memset(&result, 0, sizeof(Test_result));
@@ -71,14 +61,12 @@ Test_result execute_test(Test *test) {
 
     // Stdin Pipe: Parent writes -> Child reads (Parent will use pipe_stdin[1] to write and child will use pipe_stdin[0])
     // Stdout Pipe: Child writes -> Parent reads (Child will use pipe_stdout[1] to write and parent will use pipe_std[0] to read)
-
     pid_t pid = fork();
     if (pid < 0) {
         perror("Fork Failed");
         result.crashed = 1;
         return result;
     }
-
     if (pid == 0) {                 // CHILD    
         dup2(pipe_stdin[0], 0);
         dup2(pipe_stdout[1], 1);
@@ -89,11 +77,9 @@ Test_result execute_test(Test *test) {
         close(pipe_stdout[0]);
         close(pipe_stdout[1]);
 
-
         // tokenizing arguments to pass into execvp (using a local temp_args to modify)
         char *args[64];
         int arg_count = 0;
-
         char temp_args[1024];
         strncpy(temp_args, test->command_line, sizeof(temp_args));
         temp_args[sizeof(temp_args) - 1] = '\0';
@@ -104,12 +90,10 @@ Test_result execute_test(Test *test) {
             token = strtok(NULL, " ");
         }
         args[arg_count] = NULL;
-
         execvp(args[0], args);
         perror("execvp failed");
         exit(EXIT_FAILURE);
     }
-
     else if (pid > 0) {         // PARENT
         close(pipe_stdin[0]);
         close(pipe_stdout[1]);
@@ -130,9 +114,8 @@ Test_result execute_test(Test *test) {
         /* WNOHANG prevents wait()/waitpid() from blocking so that the process can go on with other tasks. 
         WNOHANG returns 0 if the child process is still actively running */
         while ((wpid = waitpid(pid, &status, WNOHANG)) == 0) {
-            
-            if (time(NULL) - start_time >= 5) {     // timeout checking
-                kill(pid, SIGKILL);
+            if (time(NULL) - start_time >= 5) {     // timeout checker
+                kill(pid, SIGKILL);                 // kill the child
                 waitpid(pid, &status, 0);           // collect zombie child
                 result.timed_out = 1;
                 result.crashed = 1;
@@ -140,8 +123,7 @@ Test_result execute_test(Test *test) {
                 break;
             }
 
-            // read whatever output is currently available
-            bytes_read = read(pipe_stdout[0], buffer, sizeof(buffer));
+            bytes_read = read(pipe_stdout[0], buffer, sizeof(buffer));          // read whatever output is currently available
             if (bytes_read > 0 && total_read + bytes_read < sizeof(result.test_output) - 1) {
                 memcpy(result.test_output + total_read, buffer, bytes_read);
                 total_read += bytes_read;

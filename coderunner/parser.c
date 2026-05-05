@@ -3,14 +3,14 @@
 #include <string.h>
 #include "parser.h"
 
-// -----HELPER FUNCTIONS----- 
+// -----HELPER----- 
 
 // Extracts content between { and } into 'dest'
 void extract_value(const char *line, char *dest) {
     char *start = strchr(line, '{');
     char *end = strrchr(line, '}');
     
-    if (start && end && (end > start)) {        // validate a string is inside {} AND is in the correct order
+    if (start && end && (end > start)) {
         int len = end - start - 1;
         if (len > 0) {
             strncpy(dest, start + 1, len);
@@ -18,15 +18,6 @@ void extract_value(const char *line, char *dest) {
         } 
         else {
             dest[0] = '\0';
-        }
-    }
-}
-
-// Replace commas with space in parameters
-void comma_replace(char *str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] == ',') {
-            str[i] = ' ';
         }
     }
 }
@@ -59,7 +50,6 @@ void parse_test(char* filename, Test tests[], int *count) {
             } 
             else if (strstr(line, "command:")) {
                 extract_value(line, tests[*count].command_line);
-                comma_replace(tests[*count].command_line);
             } 
             else if (strstr(line, "expected_output:")) {
                 extract_value(line, tests[*count].expected_output);
