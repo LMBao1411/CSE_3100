@@ -3,8 +3,7 @@
 
 typedef struct {
     char name[256];
-    char command[256];
-    char args_str[1024];      
+    char command_line[1024];   
     char stdin_input[1024];
     char expected_output[4096];
 } Test;

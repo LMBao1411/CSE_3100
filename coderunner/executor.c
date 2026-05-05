@@ -88,19 +88,14 @@ Test_result execute_test(Test *test) {
         close(pipe_stdin[1]);
         close(pipe_stdout[0]);
         close(pipe_stdout[1]);
-        
-        struct rlimit mem_limit;    // memory limit = 256MB
-        mem_limit.rlim_cur = 256 * 1024 * 1024;
-        mem_limit.rlim_max = 256 * 1024 * 1024;
-        setrlimit(RLIMIT_AS, &mem_limit);
 
-        // tokenizing arguments to pass into execvp 
+
+        // tokenizing arguments to pass into execvp (using a local temp_args to modify)
         char *args[64];
         int arg_count = 0;
-        args[arg_count++] = test->command;
 
         char temp_args[1024];
-        strncpy(temp_args, test->args_str, sizeof(temp_args));
+        strncpy(temp_args, test->command_line, sizeof(temp_args));
         temp_args[sizeof(temp_args) - 1] = '\0';
 
         char *token = strtok(temp_args, " ");
@@ -110,7 +105,7 @@ Test_result execute_test(Test *test) {
         }
         args[arg_count] = NULL;
 
-        execvp(test->command, args);
+        execvp(args[0], args);
         perror("execvp failed");
         exit(EXIT_FAILURE);
     }
@@ -128,49 +123,44 @@ Test_result execute_test(Test *test) {
         int total_read = 0;
         char buffer[1024];
         time_t start_time = time(NULL);
-        int timeout_secs = 5; // 5 second timeout
+        int timeout_secs = 5;
         int status;
         pid_t wpid;
-        int process_alive = 1;  // child is still running?
 
-        // Implement active polling to prevent infinite waiting
         /* WNOHANG prevents wait()/waitpid() from blocking so that the process can go on with other tasks. 
-        If a child died, its pid will be returned by wait()/waitpid() and the process can act on that. If nothing died, then the returned pid is 0 */
-        while (1) {
-            if (process_alive) {
-                wpid = waitpid(pid, &status, WNOHANG);
-                if (wpid != 0) {
-                    process_alive = 0;  // exited naturally
-                } 
-                else if (time(NULL) - start_time > timeout_secs) {
-                    kill(pid, SIGKILL);
-                    result.timed_out = 1;
-                    result.crashed = 1;
-                    strncat(result.test_output, "\n[TIMEOUT] process killed (infinite loop)\n", 
-                            sizeof(result.test_output) - strlen(result.test_output) - 1);
-                    waitpid(pid, &status, 0);      // collect the zombie child
-                    process_alive = 0;
-                }
+        WNOHANG returns 0 if the child process is still actively running */
+        while ((wpid = waitpid(pid, &status, WNOHANG)) == 0) {
+            
+            if (time(NULL) - start_time >= 5) {     // timeout checking
+                kill(pid, SIGKILL);
+                waitpid(pid, &status, 0);           // collect zombie child
+                result.timed_out = 1;
+                result.crashed = 1;
+                strncat(result.test_output, "\nprocess killed (infinite loop)\n", sizeof(result.test_output) - strlen(result.test_output) - 1);
+                break;
             }
 
-            // read output from child
+            // read whatever output is currently available
             bytes_read = read(pipe_stdout[0], buffer, sizeof(buffer));
-            if (bytes_read > 0) {
+            if (bytes_read > 0 && total_read + bytes_read < sizeof(result.test_output) - 1) {
+                memcpy(result.test_output + total_read, buffer, bytes_read);
+                total_read += bytes_read;
+                result.test_output[total_read] = '\0';
+            }
+        }
+
+        if (!result.timed_out) {        // if child finished naturally or produce a different status:
+            int bytes_read;
+            while ((bytes_read = read(pipe_stdout[0], buffer, sizeof(buffer))) > 0) {       // either read remaining output from the pipe
                 if (total_read + bytes_read < sizeof(result.test_output) - 1) {
                     memcpy(result.test_output + total_read, buffer, bytes_read);
                     total_read += bytes_read;
                     result.test_output[total_read] = '\0';
                 }
-            } 
-            else if (!process_alive) {
-                break; 
             }
-        }
+            error_handler(status, &result);         // or call error_handler to deal with the status
+        } 
         close(pipe_stdout[0]);
-
-        if (!result.timed_out) {
-            error_handler(status, &result);
-        }
     }
     return result;
 }
@@ -180,13 +170,12 @@ Test_result execute_test(Test *test) {
 int main() {
     Test tests[10];
     int count = 0;
-    
-    parse_test("test_input", tests, &count);
+    parse_test("test_python", tests, &count);
     for (int i = 0; i < count; i++) {
         printf("---Running %s---\n", tests[i].name);
         Test_result r = execute_test(&tests[i]);
         printf("Output: %s\n", r.test_output);
-        printf("Crashed: %d, Timeout: %d, Exit Code: %d\n", r.crashed, r.timed_out, r.exit_status);
+        printf("Crashed: %d, Timeout: %d, Exit Code: %d\n\n", r.crashed, r.timed_out, r.exit_status);
     }
     return 0;
 }

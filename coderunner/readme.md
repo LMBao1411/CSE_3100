@@ -6,10 +6,8 @@ How to run coderunner
 4. run ./main
 5. results.json will be produced
 
-Test parser only
+Test parser and executor
 gcc -DDEBUG_PARSER parser.c -o parser
-
-Test executor only (includes parser.c for parse_test, but only executor's main is compiled)
 gcc -DDEBUG_EXECUTOR executor.c parser.c -o executor
 
 Description of each function: 
@@ -41,3 +39,6 @@ call executor.c to run all the test cases for the file
 deal with edge cases: infinity loops, seg fault, memory overflow
         via having exit status, error flags, runtime flags, etc.
 call output.c to run and print results from test cases into a JSON file (reults.json)
+
+could use linux terminal command 
+{./calc < 1 2}

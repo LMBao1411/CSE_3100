@@ -1,0 +1,16 @@
+-
+test1
+    name:{Compilation test}
+    command:{python3 -m py_compile py_calc.py}
+    expected_output:{NONE}
+-
+test2
+    name:{IO Test}
+    command:{python3 py_calc.py 1 2}
+    expected_output:{3}
+-
+test3
+    name:{IO Test}
+    command:{python3 py_calc.py 0}
+    expected_output:{Usage: python3 py_calc.py <num1> <num2>}
+*
