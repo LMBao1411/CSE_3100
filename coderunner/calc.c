@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
-        printf("Usage: %s n1 n2 ", argv[0]);
+        printf("Usage: %s n1 n2", argv[0]);
 		return -1;
     }
 

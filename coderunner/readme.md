@@ -6,9 +6,10 @@ How to run coderunner
 4. run ./main
 5. results.json will be produced
 
-Test parser and executor
+DEBUGGING:
 gcc -DDEBUG_PARSER parser.c -o parser
 gcc -DDEBUG_EXECUTOR executor.c parser.c -o executor
+gcc -DDEBUG_OUTPUT output.c executor.c parser.c -o output
 
 Description of each function: 
 
@@ -20,25 +21,19 @@ I will just have the target file to run and its corresponding commands + paramet
 (not having a target file that will need another file to run)
 
 executor.c
-get the parameters needed for execvp to run
-set up file descriptors to redirect input / output to retrieve the data
-set up child process to run execvp
-redirect file descriptors and create communicating pipe channel to retrive output of the test cases into something that we can stored and process later
-        fork() a child process
-        Set up pipes for stdin/stdout capture
-Use execvp() to run the command
-Need to handle infinite loops + seg faults + memory overflow + etc.
+- get the parameters needed for execvp to run
+- set up file descriptors to redirect input / output to retrieve the data
+- redirect file descriptors and create communicating pipe channel to retrive output of the test cases into something that we can stored and process later
+- set up child process to run execvp
+- child run execvp() and parent read the output
+-Need to handle infinite loops + seg faults + memory overflow + etc.
 
 output.c 
-take the output from the input file and compare with the expected output
-then generate the JSON file which the format could be referenced from the pyhthon implementation
+- take the test_output received from executor from the Test_result struct then compare with the expected output
+- generate the JSON file
 
 main.c
-call parser.c to run and retrieve data into array of structs
-call executor.c to run all the test cases for the file
-deal with edge cases: infinity loops, seg fault, memory overflow
-        via having exit status, error flags, runtime flags, etc.
-call output.c to run and print results from test cases into a JSON file (reults.json)
-
-could use linux terminal command 
-{./calc < 1 2}
+- call parser.c to run and retrieve data into array of structs
+- call executor.c to run all the test cases for the file
+- deal with edge cases: infinity loops, seg fault, memory overflow via having exit status, error flags, runtime flags, etc.
+- call output.c to run and print results from test cases into a JSON file (results.json)

@@ -3,14 +3,17 @@ test1
     name:{Compilation test}
     command:{gcc calc.c -o calc}
     expected_output:{NONE}
+    score:{20}
 -
 test2
     name:{IO Test}
     command:{./calc 1 2}
     expected_output:{3}
+    score:{40}
 -
 test3
     name:{IO Test}
     command:{./calc 0}
     expected_output:{Usage: ./calc n1 n2}
+    score:{40}
 *

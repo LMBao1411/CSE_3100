@@ -54,6 +54,11 @@ void parse_test(char* filename, Test tests[], int *count) {
             else if (strstr(line, "expected_output:")) {
                 extract_value(line, tests[*count].expected_output);
             }
+            else if (strstr(line, "score:")) {
+                char temp_score[32];
+                extract_value(line, temp_score);
+                tests[*count].score = atoi(temp_score);
+            }
         }
     }
     (*count)++;
@@ -65,12 +70,13 @@ void parse_test(char* filename, Test tests[], int *count) {
 int main() {
     Test tests[100];
     int count = 0;
-    parse_test("test_python", tests, &count);
+    parse_test("test_calc_c", tests, &count);
     for (int i = 0; i < count; i++) {
         printf("Test #%d\n", i + 1);
         printf("Name: %s\n", tests[i].name);
         printf("Command: %s\n", tests[i].command_line);
         printf("Expected Output: %s\n", tests[i].expected_output);
+        printf("Score if test passed: %d\n", tests[i].score);
         printf("\n");
     }
     return 0;

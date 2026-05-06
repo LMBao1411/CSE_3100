@@ -1,23 +1,23 @@
 {
     "tests": [
-        {
-            "name": "FILE.EXTENSION",
-            "max_score": null,
-            "output": "Required Files: [FILE.EXTENSION]\nCode compilation successful\ngcc -Wall    calculator.c   -o calculator\n",
-            "status": "passed",
-            "score": null
-        },
-        {
-            "name": "IO Test-[TESTNAME] FILE.EXTENSION",
-            "max_score": 20,
-            "output": "IO Test passed\nOutput matches the expected output.\nCode output:\nEnter num1:\nEnter num2:\n1 + 2 = 3\n",
+     {
+         "name": "Compilation test",
+            "file_output": null,
+            "expected_output": null,
             "status": "passed",
             "score": 20
         },
-        {
-            "name": "IO Test-[TESTNAME] FILE.EXTENSION",
-            "max_score": 20,
-            "output": "IO Test failed\nOutput does not match the expected output.\nExpected output:\nEnter num1:\nEnter num2:\n1 * 2 = 2\n\nCode output:\nEnter num1:\nEnter num2:\n1 * 2 = -1\n\nDifference found at line 3:\nExpected: 1 * 2 = 2\n   Found: 1 * 2 = -1",
+     {
+         "name": "IO Test",
+            "file_output": "3",
+            "expected_output": "3",
+            "status": "passed",
+            "score": 40
+        },
+     {
+         "name": "IO Test",
+            "file_output": "Usage: ./calc n1 n2",
+            "expected_output": "Usage: ./calc n1 n2",
             "status": "failed",
             "score": 0
         }

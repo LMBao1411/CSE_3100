@@ -1,5 +1,6 @@
 #ifndef EXECUTOR_H
 #define EXECUTOR_H
+#include "parser.h"
 
 typedef struct {
     char test_output[4096];
@@ -9,7 +10,7 @@ typedef struct {
     int signal;
 } Test_result;
 
-void error_handler(int status, Test_result *result);
+void error_handler(int status, Test_result *test_result);
 Test_result execute_test(Test *test);
 
 #endif

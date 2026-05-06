@@ -6,6 +6,7 @@ typedef struct {
     char command_line[1024];   
     char stdin_input[1024];
     char expected_output[4096];
+    int score;
 } Test;
 
 void extract_value(const char *line, char *dest);

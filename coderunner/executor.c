@@ -14,33 +14,33 @@
 
 // Error handling function: using signal.h (SIGEGV, SIGABRT, SIGFPE, SGKILL)
 // If it is not a timed_out signal from the child process, error_handler will be called
-void error_handler(int status, Test_result *result) {
-    if (result->timed_out) return;
+void error_handler(int status, Test_result *test_result) {
+    if (test_result->timed_out) return;
 
     if (WIFEXITED(status)) {
-        result->exit_status = WEXITSTATUS(status);
-        if (result->exit_status != 0) {
-            result->crashed = 1;
+        test_result->exit_status = WEXITSTATUS(status);
+        if (test_result->exit_status != 0) {
+            test_result->crashed = 1;
         }
     }
     else if (WIFSIGNALED(status)) {
-        result->crashed = 1;
-        result->signal = WTERMSIG(status);
+        test_result->crashed = 1;
+        test_result->signal = WTERMSIG(status);
         
         char error_msg[128];
-        if (result->signal == SIGSEGV) {
+        if (test_result->signal == SIGSEGV) {
             snprintf(error_msg, sizeof(error_msg), "seg fault/stack overflow\n");
         }
-        else if (result->signal == SIGABRT) {
+        else if (test_result->signal == SIGABRT) {
             snprintf(error_msg, sizeof(error_msg), "process aborted\n");
         }
-        else if (result->signal == SIGFPE) {
+        else if (test_result->signal == SIGFPE) {
             snprintf(error_msg, sizeof(error_msg), "floating point error\n");
         }
         else {
-            snprintf(error_msg, sizeof(error_msg), "killed by signal %d\n", result->signal);
+            snprintf(error_msg, sizeof(error_msg), "killed by signal %d\n", test_result->signal);
         }
-        strncat(result->test_output, error_msg, sizeof(result->test_output) - strlen(result->test_output) - 1);
+        strncat(test_result->test_output, error_msg, sizeof(test_result->test_output) - strlen(test_result->test_output) - 1);
     }
 }
 
@@ -48,15 +48,15 @@ void error_handler(int status, Test_result *result) {
 // parameters: test struct
 // return a Test_result struct
 Test_result execute_test(Test *test) {
-    Test_result result;
-    memset(&result, 0, sizeof(Test_result));
+    Test_result test_result;
+    memset(&test_result, 0, sizeof(Test_result));
 
     int pipe_stdin[2];
     int pipe_stdout[2];
     if (pipe(pipe_stdin) < 0 || pipe(pipe_stdout) < 0) {
         perror("pipe() failed");
-        result.crashed = 1;
-        return result;
+        test_result.crashed = 1;
+        return test_result;
     }  
 
     // Stdin Pipe: Parent writes -> Child reads (Parent will use pipe_stdin[1] to write and child will use pipe_stdin[0])
@@ -64,8 +64,8 @@ Test_result execute_test(Test *test) {
     pid_t pid = fork();
     if (pid < 0) {
         perror("Fork Failed");
-        result.crashed = 1;
-        return result;
+        test_result.crashed = 1;
+        return test_result;
     }
     if (pid == 0) {                 // CHILD    
         dup2(pipe_stdin[0], 0);
@@ -117,34 +117,34 @@ Test_result execute_test(Test *test) {
             if (time(NULL) - start_time >= 5) {     // timeout checker
                 kill(pid, SIGKILL);                 // kill the child
                 waitpid(pid, &status, 0);           // collect zombie child
-                result.timed_out = 1;
-                result.crashed = 1;
-                strncat(result.test_output, "\nprocess killed (infinite loop)\n", sizeof(result.test_output) - strlen(result.test_output) - 1);
+                test_result.timed_out = 1;
+                test_result.crashed = 1;
+                strncat(test_result.test_output, "\nprocess killed (infinite loop)\n", sizeof(test_result.test_output) - strlen(test_result.test_output) - 1);
                 break;
             }
 
             bytes_read = read(pipe_stdout[0], buffer, sizeof(buffer));          // read whatever output is currently available
-            if (bytes_read > 0 && total_read + bytes_read < sizeof(result.test_output) - 1) {
-                memcpy(result.test_output + total_read, buffer, bytes_read);
+            if (bytes_read > 0 && total_read + bytes_read < sizeof(test_result.test_output) - 1) {
+                memcpy(test_result.test_output + total_read, buffer, bytes_read);
                 total_read += bytes_read;
-                result.test_output[total_read] = '\0';
+                test_result.test_output[total_read] = '\0';
             }
         }
 
-        if (!result.timed_out) {        // if child finished naturally or produce a different status:
+        if (!test_result.timed_out) {        // if child finished naturally or produce a different status:
             int bytes_read;
             while ((bytes_read = read(pipe_stdout[0], buffer, sizeof(buffer))) > 0) {       // either read remaining output from the pipe
-                if (total_read + bytes_read < sizeof(result.test_output) - 1) {
-                    memcpy(result.test_output + total_read, buffer, bytes_read);
+                if (total_read + bytes_read < sizeof(test_result.test_output) - 1) {
+                    memcpy(test_result.test_output + total_read, buffer, bytes_read);
                     total_read += bytes_read;
-                    result.test_output[total_read] = '\0';
+                    test_result.test_output[total_read] = '\0';
                 }
             }
-            error_handler(status, &result);         // or call error_handler to deal with the status
+            error_handler(status, &test_result);         // or call error_handler to deal with the status
         } 
         close(pipe_stdout[0]);
     }
-    return result;
+    return test_result;
 }
 
 // DEBUGGING
@@ -152,7 +152,7 @@ Test_result execute_test(Test *test) {
 int main() {
     Test tests[10];
     int count = 0;
-    parse_test("test_python", tests, &count);
+    parse_test("test_calc_c", tests, &count);
     for (int i = 0; i < count; i++) {
         printf("---Running %s---\n", tests[i].name);
         Test_result r = execute_test(&tests[i]);
