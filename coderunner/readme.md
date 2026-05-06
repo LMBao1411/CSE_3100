@@ -9,7 +9,7 @@
 5. A results.json file will be generated
 ---
 
-## File Descriptions
+## Descriptions
 
 ### `parser.c`
 
@@ -24,7 +24,7 @@
 
 * Builds parameters for execvp
 * Sets up file descriptors
-* Redirects input/output
+* Redirects input/output pipes between STD
 * Uses pipes to capture test output
 * Creates child processes to run execvp and write output to parent process
 * Parent process read the output and deal with child process status
