@@ -51,5 +51,7 @@
 ### Debugging Commands
 
 gcc -DDEBUG_PARSER parser.c -o parser
+
 gcc -DDEBUG_EXECUTOR executor.c parser.c -o executor
+
 gcc -DDEBUG_OUTPUT output.c executor.c parser.c -o output
