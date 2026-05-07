@@ -1,16 +1,30 @@
 {
     "tests": [
      {
-         "name": "Compilation Test",
+         "name": "Compilation test",
             "file_output": null,
             "expected_output": null,
             "status": "passed",
+            "score": 20
+        },
+     {
+         "name": "IO Test 1",
+            "file_output": "execvp failed: No such file or directory",
+            "expected_output": "3",
+            "status": "failed",
             "score": 0
         },
      {
-         "name": "PI Approximation Correctness",
-            "file_output": "PI = 3.006005",
-            "expected_output": "PI = 3.141592653589793238",
+         "name": "IO Test 2",
+            "file_output": "execvp failed: No such file or directory",
+            "expected_output": "1411",
+            "status": "failed",
+            "score": 0
+        },
+     {
+         "name": "Intentional Failed IO Test",
+            "file_output": "execvp failed: No such file or directory",
+            "expected_output": "Usage: ./calc n1 n2",
             "status": "failed",
             "score": 0
         }
