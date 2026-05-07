@@ -3,11 +3,11 @@ test1
     name:{Compilation Test}
     command:{gcc threads.c -o threads}
     expected_output:{NONE}
-    score:{0}
+    score:{10}
 -
 test2
     name:{PI Approximation Correctness}
     command:{./threads}
     expected_output:{PI = 3.141592653589793238}
-    score:{100}
+    score:{90}
 *
