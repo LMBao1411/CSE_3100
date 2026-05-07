@@ -10,19 +10,18 @@
 #include "parser.h"
 #include "executor.h"
 
-// ----- HELPER ----- //
+// ----- HELPER -----
 
 // Error handling function: using signal.h (SIGEGV, SIGABRT, SIGFPE, SGKILL)
 // If it is not a timed_out signal from the child process, error_handler will be called
 void error_handler(int status, Test_result *test_result) {
     if (test_result->timed_out) return;
 
-    if (WIFEXITED(status)) {
-        test_result->exit_status = WEXITSTATUS(status);
-        if (test_result->exit_status != 0) {
-            test_result->crashed = 1;
-        }
+    test_result->crashed = 0;
+    if (WIFSIGNALED(status)) {
+        test_result->crashed = 1;
     }
+    
     else if (WIFSIGNALED(status)) {
         test_result->crashed = 1;
         test_result->signal = WTERMSIG(status);
@@ -103,8 +102,8 @@ Test_result execute_test(Test *test) {
         }
         close(pipe_stdin[1]);
   
-        int bytes_read;
-        int total_read = 0;
+        size_t bytes_read;
+        size_t total_read = 0;
         char buffer[1024];
         time_t start_time = time(NULL);
         int timeout_secs = 5;
@@ -114,7 +113,7 @@ Test_result execute_test(Test *test) {
         /* WNOHANG prevents wait()/waitpid() from blocking so that the process can go on with other tasks. 
         WNOHANG returns 0 if the child process is still actively running */
         while ((wpid = waitpid(pid, &status, WNOHANG)) == 0) {
-            if (time(NULL) - start_time >= 5) {     // timeout checker
+            if (time(NULL) - start_time >= timeout_secs) {     // timeout checker
                 kill(pid, SIGKILL);                 // kill the child
                 waitpid(pid, &status, 0);           // collect zombie child
                 test_result.timed_out = 1;

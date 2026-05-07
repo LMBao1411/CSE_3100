@@ -1,0 +1,25 @@
+-
+test1
+    name:{Compilation test}
+    command:{gcc test_calc.c -o test_calc}
+    expected_output:{NONE}
+    score:{20}
+-
+test2
+    name:{IO Test 1}
+    command:{./test_calc 1 2}
+    expected_output:{3}
+    score:{30}
+-
+test3
+    name:{IO Test 2}
+    command:{./test_calc 1000 411}
+    expected_output:{1411}
+    score:{30}
+-
+test4
+    name:{Intentional Failed IO Test}
+    command:{./test_calc 0}
+    expected_output:{Usage: ./test_calc n1 n2}
+    score:{20}
+*

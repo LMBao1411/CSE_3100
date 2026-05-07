@@ -10,6 +10,9 @@ SRCS = main.c parser.c executor.c output.c
 # Object files
 OBJS = $(SRCS:.c=.o)
 
+# Derive executable names from source files (strips .c extension)
+EXECUTABLES = $(SRCS:.c=)
+
 all: $(TARGET)
 
 # Link all object files into final program
@@ -21,6 +24,6 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(TARGET) *.o
+	rm -f $(EXECUTABLES) *.o
 
 .PHONY: all clean

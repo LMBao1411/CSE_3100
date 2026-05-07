@@ -3,9 +3,7 @@
 #include <string.h>
 #include "parser.h"
 
-// -----HELPER----- 
-
-// Extracts content between { and } into 'dest'
+// -----HELPER-----
 void extract_value(const char *line, char *dest) {
     char *start = strchr(line, '{');
     char *end = strrchr(line, '}');

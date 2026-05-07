@@ -16,10 +16,10 @@
         },
      {
          "name": "IO Test",
-            "file_output": "Usage: ./calc n1 n2",
-            "expected_output": "Usage: ./calc n1 n2",
-            "status": "failed",
-            "score": 0
+            "file_output": "Usage: ./test_calc n1 n2",
+            "expected_output": "Usage: ./test_calc n1 n2",
+            "status": "passed",
+            "score": 40
         }
     ]
 }
