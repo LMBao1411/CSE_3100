@@ -68,7 +68,7 @@ void parse_test(char* filename, Test tests[], int *count) {
 int main() {
     Test tests[100];
     int count = 0;
-    parse_test("test_calc_c", tests, &count);
+    parse_test("input_string", tests, &count);
     for (int i = 0; i < count; i++) {
         printf("Test #%d\n", i + 1);
         printf("Name: %s\n", tests[i].name);

@@ -1,25 +1,32 @@
 {
     "tests": [
      {
-         "name": "Compilation test",
-            "file_output": null,
-            "expected_output": null,
+         "name": "Reverse String",
+            "file_output": "olleh",
+            "expected_output": "olleh",
             "status": "passed",
-            "score": 20
+            "score": 25
         },
      {
-         "name": "IO Test",
-            "file_output": "3",
-            "expected_output": "3",
+         "name": "Count Vowels",
+            "file_output": "2",
+            "expected_output": "2",
             "status": "passed",
-            "score": 40
+            "score": 25
         },
      {
-         "name": "IO Test",
-            "file_output": "Usage: ./test_calc n1 n2",
-            "expected_output": "Usage: ./test_calc n1 n2",
+         "name": "Palindrome True",
+            "file_output": "True",
+            "expected_output": "True",
             "status": "passed",
-            "score": 40
+            "score": 25
+        },
+     {
+         "name": "Palindrome False",
+            "file_output": "False",
+            "expected_output": "False",
+            "status": "passed",
+            "score": 25
         }
     ]
 }

@@ -1,0 +1,25 @@
+-
+test1
+    name:{Reverse String}
+    command:{python3 string.py reverse hello}
+    expected_output:{olleh}
+    score:{25}
+-
+test2
+    name:{Count Vowels}
+    command:{python3 string.py vowels hello}
+    expected_output:{2}
+    score:{25}
+-
+test3
+    name:{Palindrome True}
+    command:{python3 string.py palindrome racecar}
+    expected_output:{True}
+    score:{25}
+-
+test4
+    name:{Palindrome False}
+    command:{python3 string.py palindrome hello}
+    expected_output:{False}
+    score:{25}
+*

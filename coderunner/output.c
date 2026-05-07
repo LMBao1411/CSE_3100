@@ -107,7 +107,7 @@ int main() {
     Test tests[100];
     Test_result results[100];
     int count = 0;
-    parse_test("test_calc_c", tests, &count);
+    parse_test("input_string", tests, &count);
     for (int i = 0; i < count; i++) {results[i] = execute_test(&tests[i]);}
     generate_json_file(tests, results, count);
     return 0;

@@ -151,7 +151,7 @@ Test_result execute_test(Test *test) {
 int main() {
     Test tests[10];
     int count = 0;
-    parse_test("test_calc_c", tests, &count);
+    parse_test("input_string", tests, &count);
     for (int i = 0; i < count; i++) {
         printf("---Running %s---\n", tests[i].name);
         Test_result r = execute_test(&tests[i]);
