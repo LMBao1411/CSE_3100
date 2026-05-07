@@ -1,0 +1,37 @@
+-
+test1
+    name:{Factorial 0}
+    command:{python3 recursion.py factorial 0}
+    expected_output:{1}
+    score:{15}
+-
+test2
+    name:{Factorial 10}
+    command:{python3 recursion.py factorial 10}
+    expected_output:{3628800}
+    score:{15}
+-
+test3
+    name:{Fibonacci 0}
+    command:{python3 recursion.py fibonacci 0}
+    expected_output:{0}
+    score:{20}
+-
+test4
+    name:{Fibonacci 7}
+    command:{python3 recursion.py fibonacci 7}
+    expected_output:{13}
+    score:{20}
+-
+test5
+    name:{Power 2^8}
+    command:{python3 recursion.py power 2 8}
+    expected_output:{256}
+    score:{15}
+-
+test6
+    name:{Power base 0}
+    command:{python3 recursion.py power 5 0}
+    expected_output:{1}
+    score:{15}
+*

@@ -1,0 +1,37 @@
+-
+test1
+    name:{Factorial 5}
+    command:{python3 faulty_recursion.py factorial 5}
+    expected_output:{120}
+    score:{10}
+-
+test2
+    name:{Factorial 10}
+    command:{python3 faulty_recursion.py factorial 10}
+    expected_output:{3628800}
+    score:{10}
+-
+test3
+    name:{Fibonacci 7 - wrong base case}
+    command:{python3 faulty_recursion.py fibonacci 7}
+    expected_output:{13}
+    score:{20}
+-
+test4
+    name:{Fibonacci 10 - wrong base case}
+    command:{python3 faulty_recursion.py fibonacci 10}
+    expected_output:{55}
+    score:{20}
+-
+test5
+    name:{Sum Digits - infinite recursion crash}
+    command:{python3 faulty_recursion.py sumdigits 1234}
+    expected_output:{10}
+    score:{20}
+-
+test6
+    name:{Power 2^8 - wrong recursion}
+    command:{python3 faulty_recursion.py power 2 8}
+    expected_output:{256}
+    score:{20}
+*

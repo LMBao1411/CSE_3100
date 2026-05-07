@@ -1,32 +1,18 @@
 {
     "tests": [
      {
-         "name": "Reverse String",
-            "file_output": "olleh",
-            "expected_output": "olleh",
+         "name": "Compilation Test",
+            "file_output": null,
+            "expected_output": null,
             "status": "passed",
-            "score": 25
+            "score": 0
         },
      {
-         "name": "Count Vowels",
-            "file_output": "2",
-            "expected_output": "2",
-            "status": "passed",
-            "score": 25
-        },
-     {
-         "name": "Palindrome True",
-            "file_output": "True",
-            "expected_output": "True",
-            "status": "passed",
-            "score": 25
-        },
-     {
-         "name": "Palindrome False",
-            "file_output": "False",
-            "expected_output": "False",
-            "status": "passed",
-            "score": 25
+         "name": "PI Approximation Correctness",
+            "file_output": "PI = 3.006005",
+            "expected_output": "PI = 3.141592653589793238",
+            "status": "failed",
+            "score": 0
         }
     ]
 }
