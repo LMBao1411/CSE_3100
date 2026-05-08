@@ -7,6 +7,7 @@
 #include <sys/resource.h>
 #include <signal.h>
 #include <time.h>
+#include <fcntl.h>
 #include "parser.h"
 #include "executor.h"
 
@@ -101,7 +102,10 @@ Test_result execute_test(Test *test) {
             write(pipe_stdin[1], test->stdin_input, strlen(test->stdin_input));
         }
         close(pipe_stdin[1]);
-  
+        
+        int flags = fcntl(pipe_stdout[0], F_GETFL, 0);      // Make the pipe non-blocking so read() doesn't freeze the parent
+        fcntl(pipe_stdout[0], F_SETFL, flags | O_NONBLOCK);
+
         size_t bytes_read;
         size_t total_read = 0;
         char buffer[1024];
@@ -128,7 +132,10 @@ Test_result execute_test(Test *test) {
                 total_read += bytes_read;
                 test_result.test_output[total_read] = '\0';
             }
+            usleep(10000);
         }
+        
+        fcntl(pipe_stdout[0], F_SETFL, flags);      // Restore blocking mode for the final cleanup read
 
         if (!test_result.timed_out) {        // if child finished naturally or produce a different status:
             int bytes_read;

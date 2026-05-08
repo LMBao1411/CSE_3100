@@ -5,26 +5,12 @@
             "file_output": null,
             "expected_output": null,
             "status": "passed",
-            "score": 20
+            "score": 10
         },
      {
-         "name": "IO Test 1",
-            "file_output": "execvp failed: No such file or directory",
-            "expected_output": "3",
-            "status": "failed",
-            "score": 0
-        },
-     {
-         "name": "IO Test 2",
-            "file_output": "execvp failed: No such file or directory",
-            "expected_output": "1411",
-            "status": "failed",
-            "score": 0
-        },
-     {
-         "name": "Intentional Failed IO Test",
-            "file_output": "execvp failed: No such file or directory",
-            "expected_output": "Usage: ./calc n1 n2",
+         "name": "Stack Overflow via Infinite Recursion",
+            "file_output": null,
+            "expected_output": null,
             "status": "failed",
             "score": 0
         }
